@@ -220,7 +220,9 @@ class FollowersProperty(Property):
     def update(self, value, meta=None):
         if self.DEBUG and meta != None:
             print("property: update: unexpectedly received meta data.  self.title, meta: ", self.title, meta)
-        print("property -> update.  typeof value, value: ", type(value), value)
+        
+        if self.DEBUG:
+            print("property -> update.  typeof value, value: ", type(value), value)
         if value != self.value:
             self.device.adapter.api_handler.persistent_data['variables'][self.id]['value'] = self.value
             self.device.adapter.api_handler.should_save = True

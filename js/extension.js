@@ -10,6 +10,7 @@
 		this.debug = false;
 
 		this.showing_not_ready_yet_warning = false;
+		this.showing_screensaver = false;
 
 		this.item_elements = ['limit1', 'limit2', 'thing1', 'property1', 'limit3', 'limit4', 'thing2', 'property2'];
 		this.variables_elements = ['name','type','limit1','limit2'];
@@ -151,6 +152,20 @@
 			}
 
 
+			const variables_play_overlay_el = this.view.querySelector('#extension-followers-variables-play-overlay');
+			if (variables_play_overlay_el) {
+				variables_play_overlay_el.addEventListener('click', () => {
+					this.stop_variables_screensaver();
+				});
+			}
+
+
+			const variables_play_button_el = this.view.querySelector('#extension-followers-variables-play-button-container');
+			if (variables_play_button_el) {
+				variables_play_button_el.addEventListener('click', () => {
+					this.start_variables_screensaver();
+				});
+			}
 			// Click event for variables ADD button
 			const variables_add_button_el = this.view.querySelector('#extension-followers-variables-add-button');
 			if(variables_add_button_el){
@@ -467,258 +482,276 @@
 			//  Change listener. Called if the user changes anything in the existing items in the list. Mainly used to update properties if a new thing is selected.
 			//
 
-			const variables_list_el = document.getElementById('extension-followers-variables-list');
-			variables_list_el.addEventListener('change', (event) => {
-				if (this.debug) {
-					console.log("followers debug: variables_list_el: eventListener: change detected: ", event);
-				}
-				try {
-
-					// Loops over all the things, and when a thing matches the changed element, its properties list is updated.
-					for (var thing in this.all_things) {
-						//console.log( this.all_things[thing] );
-
-						try {
-							//console.log(this.all_things[thing]['id'], " =?= ", event['target'].value);
-
-							if (this.all_things[thing]['id'].endsWith('/' + event['target'].value)) {
-								if(this.debug){
-									console.log("followers debug: variables: found the thing that changed: ", event['target'].value)
-								}
-								const property_dropdown_el = event['target'].nextSibling;
-								if (this.debug) {
-									console.log("followers debug: variables: sibling property_dropdown_el: ", property_dropdown_el);
-								}
-
-								if (property_dropdown_el){
-									property_dropdown_el.innerHTML = '';
-
-									const property_lists = this.get_property_lists(this.all_things[thing]['properties'], false); // false = do not skip boolean properties
-									if (this.debug) {
-										console.log("followers debug: variables: property_lists: ", property_lists);
-									}
-
-									if (event.target.classList.contains("extension-followers-thing1")) { // always the case for variables, since triggers only need one property
-										for (var title in property_lists['property1_list']) {
-											property_dropdown_el.options[property_dropdown_el.options.length] = new Option(property_lists['property1_list'][title], property_lists['property1_system_list'][title]);
-										}
-									}
-
-								}
-								
-							}
-						}
-						catch (err) {
-							if(this.debug){
-								console.error("followers debug: caught error clearing property dropdown select options: ", err);
-							}
-						}
-					}
-
-				}
-				catch (err) {
-					if (this.debug) {
-						console.error("followers debug: caught error handling change in follower: ", err);
-					}
-				}
-
-
-				let item = event.target.closest('.extension-followers-item');
-
-				if(!item){
-					return
-				}
-				let unique_id = item.getAttribute('data-extension-followers-variables-item-unique-id');
-				if (typeof unique_id != 'string'){
-					return
-				}
-
-				if(typeof this.variables[unique_id] == 'undefined'){
-					console.error("followers:variables: somehow this unique ID no longer exists: ", unique_id); // perhaps deleted in another window?
-					item.remove();
-					return
-				}
-				//var updated_values = [];
-				//const item_list = document.querySelectorAll('#extension-followers-variables-list .extension-followers-item');
-
-				// Loop over all the Variables items
-				//item_list.forEach(item => {
-
-				if (typeof this.variables[unique_id]['triggers'] == 'undefined'){
-					this.variables[unique_id]['triggers'] = {};
-				}
-
-
-				var incomplete = false;
-
-				// For each item in the variables list, loop over all values in the item to check if they are filled.
-				for (let value_index in this.variables_elements) {
-					if (this.debug) {
-						console.log("followers debug: variables: looking for input/select: ", this.variables_elements[value_index]);
-					}
-					const el_with_value = item.querySelector('.extension-followers-' + this.variables_elements[value_index]);
-					if (el_with_value){
-						const new_value = el_with_value.value;
-						if (this.debug) {
-							console.log("followers debug: variables: new_value = ", new_value);
-						}
-						//console.log("new_value.length = " + new_value.length);
-
-						
-
-						if (('' + new_value).length > 0) {
-							el_with_value.classList.remove('extension-followers-needs-a-value');
-							this.variables[unique_id][ this.variables_elements[value_index] ] = new_value; //item.querySelector('.extension-followers-' + this.variables_elements[value_index]).value;
-						}
-						else {
-							incomplete = true;
-							el_with_value.classList.add('extension-followers-needs-a-value');
-							//if (this.variables_elements[value_index] == 'name'){}
-						}
-					}
-					else{
-						if (this.debug) {
-							console.error("followers debug: variables: could not find:  extension-followers-" + this.variables_elements[value_index]);
-						}
-					}
-					
-				}
-				//console.log( "Is item checked?" + item.querySelectorAll('.extension-followers-variables-enabled')[0].checked );
-
-				if (this.variables[unique_id]['limit1'] == this.variables[unique_id]['limit2']) {
-					this.variables[unique_id]['limit2'] = this.variables[unique_id]['limit1'] + 1;
-				}
-
-				const triggers_list_el = item.querySelector('.extension-followers-variables-item-triggers-list');
-				if (triggers_list_el){
-					if (this.debug) {
-						console.log("followers debug: variables: triggers_list_el: ", triggers_list_el);
-					}
-					const trigger_els = triggers_list_el.children;
-					if (this.debug) {
-						console.log("followers debug: variables: trigger_els: ", trigger_els);
-					}
-					for (var te = 0; te < trigger_els.length; te++) {
-						let trigger_id = trigger_els[te].getAttribute('data-extension-followers-variables-trigger-id');
-						if (typeof trigger_id != 'string'){
-							if (this.debug) {
-								console.error("followers debug: variables: trigger container without an ID?");
-							}
-							trigger_els[te].remove();
-							continue
-						}
-						if (typeof this.variables[unique_id]['triggers'][trigger_id] == 'undefined'){
-							if (this.debug) {
-								console.error("followers debug: variables: trigger_id was missing: ", trigger_id);
-							}
-							continue
-						}
-
-						
-						
-
-						let trigger_values = {};
-						for (let value_index in this.variables_triggers_elements) {
-							if(this.debug) {
-								//console.log("followers debug: variables: looking for value from trigger element: ", '.extension-followers-' + this.variables_triggers_elements[value_index]);
-							}
-							const trigger_el_with_value = trigger_els[te].querySelector('.extension-followers-' + this.variables_triggers_elements[value_index]);
-							if (trigger_el_with_value){
-								this.variables[unique_id]['triggers'][trigger_id][this.variables_triggers_elements[value_index]] = trigger_el_with_value.value;
-							}
-							else{
-								if(this.debug) {
-									console.error("followers debug: variables: could not find trigger value el: ", this.variables_triggers_elements[value_index]);
-								}
-							}
-						}
-
-						if (typeof this.variables[unique_id]['triggers'][trigger_id]['property1_type'] == 'undefined'){
-							this.variables[unique_id]['triggers'][trigger_id]['property1_type'] = null;
-						}
-						//trigger_values['type'] = null; // if it remains null, then it must be an action
-						if (typeof this.variables[unique_id]['triggers'][trigger_id]['thing1'] == 'string' && typeof this.variables[unique_id]['triggers'][trigger_id]['property1'] == 'string'){
-							const property_description = this.get_property_description(this.variables[unique_id]['triggers'][trigger_id]['thing1'], this.variables[unique_id]['triggers'][trigger_id]['property1']);
-							if (this.debug) {
-								console.log("followers debug: variables: property_description from get_property_description: ", property_description);
-							}
-							if (property_description && typeof property_description['type'] == 'string'){
-								this.variables[unique_id]['triggers'][trigger_id]['property1_type'] = property_description['type'];
-
-								if (this.variables[unique_id]['triggers'][trigger_id]['property1_type'] == 'string' && typeof property_description['enum'] != 'undefined' && Array.isArray(property_description['enum']) && property_description['enum'].length > 1){
-									const enum_change_el = trigger_els[te].querySelector('.extension-followers-change_enum_value');
-									if (enum_change_el){
-										enum_change_el.innerHTML = '';
-										this.variables[unique_id]['triggers'][trigger_id]['property1_type'] = 'enum';
-										for (let ei = 0; ei < property_description['enum'].length; ei++) {
-											enum_change_el.options[enum_change_el.options.length] = new Option(property_description['enum'][ei], property_description['enum'][ei]);
-										}
-									}
-								}
-							}
-						}
-						if (typeof this.variables[unique_id]['triggers'][trigger_id]['property1_type'] == 'string'){
-							trigger_els[te].setAttribute('data-extension-followers-variables-trigger-property1-type', this.variables[unique_id]['triggers'][trigger_id]['property1_type']);
-						}
-						else{
-							trigger_els[te].setAttribute('data-extension-followers-variables-trigger-property1-type', 'action');
-						}
-						
-
-
-						if (this.debug) {
-							console.log("followers debug: variables: trigger item's values: ", this.variables[unique_id]['triggers'][trigger_id]);
-						}
-					}
-					
-
-					// Check if this item is enabled
-					const item_enabled_el = item.querySelector('.extension-followers-enabled');
-					this.variables[unique_id]['enabled'] = item_enabled_el.checked;
-
-					if (typeof this.variables[unique_id]['type'] == 'string') {
-						item.setAttribute('data-extension-followers-variables-item-type', this.variables[unique_id]['type']); // range, bounce, etc
-					}
-
-
-
-					if (this.debug) {
-						console.log("followers debug: variables: updated variables: ", unique_id, this.variables[unique_id]);
-					}
-					//updated_values.push(new_values);
-
-				};
-
-				//console.log("updated_values:");
-				//console.log(updated_values);
-
-
-				// Store the updated list
-				//this.variables = updated_values;
-
-				// Send new values to backend
-				if (this.debug) {
-					console.log("\n\nfollowers debug: variables: sending this.variables to backend: ", this.variables, "\n\n");
-				}
-				window.API.postJson(
-					`/extensions/${this.id}/api/update_items`,
-					{ 'variables': this.variables }
-				).then((body) => {
-					//thing_list.innerText = body['state'];
-					//console.log(body);
-					if (body['state'] != true) {
-						if (this.debug) {
-							console.error('followers debug: variables: regenerate_variables: calling updated_values returned a state that was false');
-						}
-					}
-
-				}).catch((err) => {
-					if (this.debug) {
-						console.error("followers debug: variables: regenerate_variables: caught error in save items handler: ", err);
+			const variables_list_el = this.view.querySelector('#extension-followers-variables-list');
+			if (variables_list_el) {
+				variables_list_el.addEventListener('click', () => {
+					if (this.showing_screensaver) {
+						this.stop_variables_screensaver();
+						//variables_list_el.closest('#extension-followers-variables-content').classList.remove('extension-followers-variables-screensaver');
 					}
 				});
 
-			});
+				variables_list_el.addEventListener('change', (event) => {
+					if (this.debug) {
+						console.log("followers debug: variables_list_el: eventListener: change detected: ", event);
+					}
+					try {
+
+						// Loops over all the things, and when a thing matches the changed element, its properties list is updated.
+						for (var thing in this.all_things) {
+							//console.log( this.all_things[thing] );
+
+							try {
+								//console.log(this.all_things[thing]['id'], " =?= ", event['target'].value);
+
+								if (this.all_things[thing]['id'].endsWith('/' + event['target'].value)) {
+									if (this.debug) {
+										console.log("followers debug: variables: found the thing that changed: ", event['target'].value)
+									}
+									const property_dropdown_el = event['target'].nextSibling;
+									if (this.debug) {
+										console.log("followers debug: variables: sibling property_dropdown_el: ", property_dropdown_el);
+									}
+
+									if (property_dropdown_el) {
+										property_dropdown_el.innerHTML = '';
+
+										const property_lists = this.get_property_lists(this.all_things[thing]['properties'], false); // false = do not skip boolean properties
+										if (this.debug) {
+											console.log("followers debug: variables: property_lists: ", property_lists);
+										}
+
+										if (event.target.classList.contains("extension-followers-thing1")) { // always the case for variables, since triggers only need one property
+											for (var title in property_lists['property1_list']) {
+												property_dropdown_el.options[property_dropdown_el.options.length] = new Option(property_lists['property1_list'][title], property_lists['property1_system_list'][title]);
+											}
+										}
+
+									}
+
+								}
+							}
+							catch (err) {
+								if (this.debug) {
+									console.error("followers debug: caught error clearing property dropdown select options: ", err);
+								}
+							}
+						}
+
+					}
+					catch (err) {
+						if (this.debug) {
+							console.error("followers debug: caught error handling change in follower: ", err);
+						}
+					}
+
+
+					let item = event.target.closest('.extension-followers-item');
+
+					if (!item) {
+						return
+					}
+					let unique_id = item.getAttribute('data-extension-followers-variables-item-unique-id');
+					if (typeof unique_id != 'string') {
+						return
+					}
+
+					if (typeof this.variables[unique_id] == 'undefined') {
+						console.error("followers:variables: somehow this unique ID no longer exists: ", unique_id); // perhaps deleted in another window?
+						item.remove();
+						return
+					}
+					//var updated_values = [];
+					//const item_list = document.querySelectorAll('#extension-followers-variables-list .extension-followers-item');
+
+					// Loop over all the Variables items
+					//item_list.forEach(item => {
+
+					if (typeof this.variables[unique_id]['triggers'] == 'undefined') {
+						this.variables[unique_id]['triggers'] = {};
+					}
+
+
+					var incomplete = false;
+
+					// For each item in the variables list, loop over all values in the item to check if they are filled.
+					for (let value_index in this.variables_elements) {
+						if (this.debug) {
+							console.log("followers debug: variables: looking for input/select: ", this.variables_elements[value_index]);
+						}
+						const el_with_value = item.querySelector('.extension-followers-' + this.variables_elements[value_index]);
+						if (el_with_value) {
+							let new_value = el_with_value.value;
+
+							if (el_with_value.tagName == 'input' && el_with_value.getAttribute('type') === 'number') {
+								new_value = this.ensure_number(new_value);
+							}
+
+
+							if (this.debug) {
+								console.log("followers debug: variables: new_value = ", new_value);
+							}
+							//console.log("new_value.length = " + new_value.length);
+
+
+
+							if (('' + new_value).length > 0) {
+								el_with_value.classList.remove('extension-followers-needs-a-value');
+								this.variables[unique_id][this.variables_elements[value_index]] = new_value; //item.querySelector('.extension-followers-' + this.variables_elements[value_index]).value;
+							}
+							else {
+								incomplete = true;
+								el_with_value.classList.add('extension-followers-needs-a-value');
+								//if (this.variables_elements[value_index] == 'name'){}
+							}
+						}
+						else {
+							if (this.debug) {
+								console.error("followers debug: variables: could not find:  extension-followers-" + this.variables_elements[value_index]);
+							}
+						}
+
+					}
+					//console.log( "Is item checked?" + item.querySelectorAll('.extension-followers-variables-enabled')[0].checked );
+
+					if (this.variables[unique_id]['limit1'] == this.variables[unique_id]['limit2']) {
+						this.variables[unique_id]['limit2'] = parseInt(this.variables[unique_id]['limit1']) + 1;
+					}
+
+					const triggers_list_el = item.querySelector('.extension-followers-variables-item-triggers-list');
+					if (triggers_list_el) {
+						if (this.debug) {
+							console.log("followers debug: variables: triggers_list_el: ", triggers_list_el);
+						}
+						const trigger_els = triggers_list_el.children;
+						if (this.debug) {
+							console.log("followers debug: variables: trigger_els: ", trigger_els);
+						}
+						for (var te = 0; te < trigger_els.length; te++) {
+							let trigger_id = trigger_els[te].getAttribute('data-extension-followers-variables-trigger-id');
+							if (typeof trigger_id != 'string') {
+								if (this.debug) {
+									console.error("followers debug: variables: trigger container without an ID?");
+								}
+								trigger_els[te].remove();
+								continue
+							}
+							if (typeof this.variables[unique_id]['triggers'][trigger_id] == 'undefined') {
+								if (this.debug) {
+									console.error("followers debug: variables: trigger_id was missing: ", trigger_id);
+								}
+								continue
+							}
+
+
+
+
+							let trigger_values = {};
+							for (let value_index in this.variables_triggers_elements) {
+								if (this.debug) {
+									//console.log("followers debug: variables: looking for value from trigger element: ", '.extension-followers-' + this.variables_triggers_elements[value_index]);
+								}
+								const trigger_el_with_value = trigger_els[te].querySelector('.extension-followers-' + this.variables_triggers_elements[value_index]);
+								if (trigger_el_with_value) {
+									this.variables[unique_id]['triggers'][trigger_id][this.variables_triggers_elements[value_index]] = trigger_el_with_value.value;
+								}
+								else {
+									if (this.debug) {
+										console.error("followers debug: variables: could not find trigger value el: ", this.variables_triggers_elements[value_index]);
+									}
+								}
+							}
+
+							if (typeof this.variables[unique_id]['triggers'][trigger_id]['property1_type'] == 'undefined') {
+								this.variables[unique_id]['triggers'][trigger_id]['property1_type'] = null;
+							}
+							//trigger_values['type'] = null; // if it remains null, then it must be an action
+							if (typeof this.variables[unique_id]['triggers'][trigger_id]['thing1'] == 'string' && typeof this.variables[unique_id]['triggers'][trigger_id]['property1'] == 'string') {
+								const property_description = this.get_property_description(this.variables[unique_id]['triggers'][trigger_id]['thing1'], this.variables[unique_id]['triggers'][trigger_id]['property1']);
+								if (this.debug) {
+									console.log("followers debug: variables: property_description from get_property_description: ", property_description);
+								}
+								if (property_description && typeof property_description['type'] == 'string') {
+									this.variables[unique_id]['triggers'][trigger_id]['property1_type'] = property_description['type'];
+
+									if (this.variables[unique_id]['triggers'][trigger_id]['property1_type'] == 'string' && typeof property_description['enum'] != 'undefined' && Array.isArray(property_description['enum']) && property_description['enum'].length > 1) {
+										const enum_change_el = trigger_els[te].querySelector('.extension-followers-change_enum_value');
+										if (enum_change_el) {
+											enum_change_el.innerHTML = '';
+											this.variables[unique_id]['triggers'][trigger_id]['property1_type'] = 'enum';
+											for (let ei = 0; ei < property_description['enum'].length; ei++) {
+												enum_change_el.options[enum_change_el.options.length] = new Option(property_description['enum'][ei], property_description['enum'][ei]);
+											}
+										}
+									}
+								}
+							}
+							if (typeof this.variables[unique_id]['triggers'][trigger_id]['property1_type'] == 'string') {
+								trigger_els[te].setAttribute('data-extension-followers-variables-trigger-property1-type', this.variables[unique_id]['triggers'][trigger_id]['property1_type']);
+							}
+							else {
+								trigger_els[te].setAttribute('data-extension-followers-variables-trigger-property1-type', 'action');
+							}
+
+
+
+							if (this.debug) {
+								console.log("followers debug: variables: trigger item's values: ", this.variables[unique_id]['triggers'][trigger_id]);
+							}
+						}
+
+
+						// Check if this item is enabled
+						const item_enabled_el = item.querySelector('.extension-followers-enabled');
+						this.variables[unique_id]['enabled'] = item_enabled_el.checked;
+
+						if (typeof this.variables[unique_id]['type'] == 'string') {
+							item.setAttribute('data-extension-followers-variables-item-type', this.variables[unique_id]['type']); // range, bounce, etc
+						}
+
+
+
+						if (this.debug) {
+							console.log("followers debug: variables: updated variables: ", unique_id, this.variables[unique_id]);
+						}
+						//updated_values.push(new_values);
+
+					};
+
+					//console.log("updated_values:");
+					//console.log(updated_values);
+
+
+					// Store the updated list
+					//this.variables = updated_values;
+
+					// Send new values to backend
+					if (this.debug) {
+						console.log("\n\nfollowers debug: variables: sending this.variables to backend: ", this.variables, "\n\n");
+					}
+					window.API.postJson(
+						`/extensions/${this.id}/api/update_items`,
+						{ 'variables': this.variables }
+					).then((body) => {
+						//thing_list.innerText = body['state'];
+						//console.log(body);
+						if (body['state'] != true) {
+							if (this.debug) {
+								console.error('followers debug: variables: regenerate_variables: calling updated_values returned a state that was false');
+							}
+						}
+
+					}).catch((err) => {
+						if (this.debug) {
+							console.error("followers debug: variables: regenerate_variables: caught error in save items handler: ", err);
+						}
+					});
+
+				});
+
+			}
+
+			
 		
 		}, 100);
 
@@ -741,7 +774,25 @@
 
 
 
-
+	ensure_number(new_value){
+		if (this.debug) {
+			console.log("followers debug: variables: turn_into_number:  provided value: ", typeof new_value, new_value);
+		}
+		if (('' + new_value).isDigit()) {
+			new_value = parseInt(new_value)
+		}
+		else if (!isNaN(new_value) && (new_value.toString().indexOf('.') != -1 || new_value.toString().indexOf(',') != -1)) {
+			new_value = parseFloat(new_value);
+			new_value = parseFloat(new_value.toFixed(3));
+		}
+		else {
+			if (this.debug) {
+				console.warn("followers debug: variables: parsing number input into an actual int or float fell through!");
+			}
+			new_value = 1
+		}
+		return new_value
+	}
 
 
 
@@ -965,8 +1016,8 @@
 		try {
 			let items = this.variables;
 
-			const original = document.getElementById('extension-followers-variables-original-item');
-			const list = document.getElementById('extension-followers-variables-list');
+			const original = this.view.querySelector('#extension-followers-variables-original-item');
+			const list = this.view.querySelector('#extension-followers-variables-list');
 
 			list.innerHTML = "";
 
@@ -1215,16 +1266,23 @@
 
 			// Loop over all items
 			let variable_ids = Object.keys(items);
-			console.log("variable_ids: ", variable_ids);
+			//console.log("variable_ids: ", variable_ids);
 			for (var vi in variable_ids) {
-				console.log("vi: ", vi);
 				const unique_id = variable_ids[vi];
-				console.log("unique_id: ", unique_id);
+				//console.log("unique_id: ", unique_id);
 				var clone = original.cloneNode(true);
 				clone.removeAttribute('id');
 				if (this.debug) {
 					console.log("followers debug: variables: regenerate_variables:  unique_id: ", unique_id);
 				}
+
+				if (typeof this.variables[unique_id]['value'] == 'number'){
+					const value_el = clone.querySelector('.extension-followers-value');
+					if (value_el) {
+						value_el.value = parseFloat(this.variables[unique_id]['value'].toFixed(3));
+					}
+				}
+				
 
 
 				// Add delete button click event
@@ -1671,6 +1729,100 @@
 		}
 		return null
 	}
+
+
+
+	start_variables_screensaver(){
+		if (this.debug) {
+			console.log("followers debug: variables: in start_variables_screensaver");
+		}
+
+		const variables_content_el = this.view.querySelector('#extension-followers-variables-content');
+		if (variables_content_el){
+			variables_content_el.classList.add('extension-followers-variables-screensaver');
+		}
+		
+		this.showing_screensaver = true;
+		/*
+		if(this.variables_screensaver_interval == null){
+			this.variables_screensaver_interval
+		}
+		*/
+		this.update_variables_screensaver();
+
+	}
+
+
+	update_variables_screensaver(){
+		let variable_ids = Object.keys(this.variables);
+		console.log("variable_ids: ", variable_ids);
+
+		const list_el = this.view.querySelector('#extension-followers-variables-list');
+
+		for (var vi in variable_ids) {
+			const unique_id = variable_ids[vi];
+			const variable_item_el = list_el.querySelector('.extension-followers-item[data-extension-followers-variables-item-unique-id="' + unique_id + '"');
+			if (variable_item_el){
+				let pixel_value = this.variables[unique_id]['value'];
+				if (typeof pixel_value == 'string'){
+					pixel_value = parseInt(pixel_value);
+				}
+				if (typeof pixel_value != 'number') {
+					continue
+				}
+
+				pixel_value = Math.abs(Math.round(pixel_value));
+				if(this.debug){
+					console.log("\nfollowers debug: update_variables_screensaver: pixel_value before: ", pixel_value);
+				}
+				
+				let scaling_factor = 1;
+				if (this.variables[unique_id]['type'] == 'range' || this.variables[unique_id]['type'] == 'loop' || this.variables[unique_id]['type'] == 'bounce'){
+					if (typeof this.variables[unique_id]['limit1'] == 'number' && typeof this.variables[unique_id]['limit2'] == 'number'){
+						let allowed_range = Math.abs(this.variables[unique_id]['limit2'] - this.variables[unique_id]['limit1']);
+						scaling_factor = 100 / allowed_range;
+					}
+					pixel_value = pixel_value * scaling_factor;
+					pixel_value += 10;
+				}
+				else{
+					pixel_value = pixel_value % 100;
+				}
+
+				pixel_value += 10;
+
+				if (pixel_value == 10){
+					pixel_value = 60;
+				}
+
+				if (this.debug) {
+					console.log("followers debug: update_variables_screensaver: pixel_value after: ", pixel_value);
+				}
+
+
+				variable_item_el.style.setProperty('--s', pixel_value + 'px');
+
+			}
+		}
+
+	}
+
+
+	stop_variables_screensaver(){
+		if (this.debug) {
+			console.log("followers debug: variables: in stop_variables_screensaver");
+		}
+		const variables_content_el = this.view.querySelector('#extension-followers-variables-content');
+		if (variables_content_el){
+			variables_content_el.classList.remove('extension-followers-variables-screensaver');
+		}
+		this.showing_screensaver = false;
+	}
+
+
+
+
+
 
 
   }
