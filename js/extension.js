@@ -53,13 +53,14 @@
 				this.view.classList.add('extensions-followers-view-show-variables');
 				if(this.at_variables == false){
 					this.at_variables = true;
-					this.regenerate_variables();
 				}
+				this.regenerate_variables();
 			});
 		}
 		*/
+		
 
-
+		
 		const main_menu_ul_el = document.querySelector('#main-menu > ul');
 		if(main_menu_ul_el){
 			const menu_link_els = main_menu_ul_el.querySelectorAll('a');
@@ -73,8 +74,9 @@
 						this.variables_menu_item_el.setAttribute('id','extension-variables-menu-item');
 						this.variables_menu_item_el.setAttribute('href','/extensions/followers#variables');
 
-						this.variables_menu_item_el.addEventListener('click', () => {
+						this.variables_menu_item_el.addEventListener('click', (event) => {
 							//event.preventDefault();
+							this.at_variables = true;
 							this.view.classList.add('extensions-followers-view-show-variables');
 							this.regenerate_variables();
 						});
@@ -83,6 +85,7 @@
 				}
 			}
 		}
+		
 
 
 
