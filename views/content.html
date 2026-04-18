@@ -1,5 +1,5 @@
 <div id="extension-followers-content">
-  
+
     <div id="extension-followers-content-container">
         <h3 id="extension-followers-title"><span id="extension-followers-iconx"></span>Followers</h3>
         <div id="extension-followers-not-ready-warning" style="display:none">
@@ -25,64 +25,63 @@
                 </div>
             </div>
         </div>
-        
-        
+
+
         <div id="extension-followers-original-item" class="extension-followers-item">
-            
+
             <div class="extension-followers-item-sentence">
                 <div class="extension-followers-item-sentence-part">
                     <span>
                         <input type="number" step="0.001" class="extension-followers-limit extension-followers-limit1" name="extension-followers-limit1" value="0">
-                        to 
+                        to
                         <input type="number" step="0.001" class="extension-followers-limit extension-followers-limit2" name="extension-followers-limit2" value="100">
-                        of 
+                        of
                     </span>
                     <span class="extension-followers-leader">
                         <select class="extension-followers-thing1 extension-followers-dropdown">
-                            <option value=""></option>
+                            <option value="">-</option>
                         </select><select class="extension-followers-property1 extension-followers-dropdown">
-                            <option value=""></option>
+                            <option value="">-</option>
                         </select>
                     </span>
                 </div>
-                
+
                 <div class="extension-followers-item-sentence-part extension-followers-item-sentence-part-inter">
                     should translate to values between
                 </div>
-                
+
                 <div class="extension-followers-item-sentence-part">
                     <span>
-                        <input type="number" step="0.001" class="extension-followers-limit extension-followers-limit3" name="extension-followers-limit3" value="0"> 
-                        to 
-                        <input type="number" step="0.001" class="extension-followers-limit extension-followers-limit4" name="extension-followers-limit4" value="100"> 
-                        of 
+                        <input type="number" step="0.001" class="extension-followers-limit extension-followers-limit3" name="extension-followers-limit3" value="0">
+                        to
+                        <input type="number" step="0.001" class="extension-followers-limit extension-followers-limit4" name="extension-followers-limit4" value="100">
+                        of
                     </span>
                     <span class="extension-followers-follower">
                         <select class="extension-followers-thing2 extension-followers-dropdown">
-                            <option value=""></option>
+                            <option value="">-</option>
                         </select><select class="extension-followers-property2 extension-followers-dropdown">
-                            <option value=""></option>
+                            <option value="">-</option>
                         </select>
                     </span>
                 </div>
-                
+
                 <div class="extension-followers-item-sentence-part extension-followers-item-sentence-part-inter">
                     every <select class="extension-followers-speed extension-followers-dropdown">
                             <option value="7">minute</option>
                             <option value="2">10 seconds</option>
                             <option value="0">second</option>
-                            
-                            
+
+
                         </select>
                 </div>
             </div>
-            
+
             <div class="extension-followers-item-menu">
                 <div class="extension-followers-item-left">
-                    <form class="rule-switch switch">
-                        <input type="checkbox" id="extension-followers-toggle-checkbox" class="switch-checkbox extension-followers-enabled">
-                        <label class="switch-slider" for="extension-followers-toggle-label">
-                        </label>
+                    <form class="extension-followers-switch-container">
+                        <input type="checkbox" id="extension-followers-toggle-checkbox" class="extension-followers-switch-checkbox extension-followers-enabled">
+                        <label class="extension-followers-switch-slider" for="extension-followers-toggle-label"></label>
                     </form>
                 </div>
 
@@ -91,7 +90,7 @@
                     <div class="extension-followers-item-delete-button">&nbsp;</div>
                 </div>
             </div>
-        
+
             <div class="rule-edit-overlay delete">
                 <div class="rule-delete-dialog">
                     <p>Are you sure you want to remove this follower permanently?</p>
@@ -99,35 +98,160 @@
                     <input class="rule-delete-confirm-button" type="button" value="Remove">
                 </div>
             </div>
-            
+
         </div>
 
 
-        <br/>
-        <br/>
+        <br>
+        <br>
 
         <div id="extension-followers-debug-warning" style="display: none;">
             <h2>Debugging is enabled</h2>
             <p>This addon is currently set to save detailed information about its operation in the internal logs. This may impact your privacy, as this also means that insights into your behaviour might be stored in those logs.</p>
             <p>You can disable debugging mode by going to <span style="font-style:italic">Settings</span>, then <span style="font-style:italic">Addons</span>, and then clicking on the <span style="font-style:italic">Settings</span> button for the <span style="font-style:italic">Followers</span> addon. There you can uncheck the debugging option and click <span style="font-style:italic">Apply</span>.</p>
         </div>
-        
-        <br/>
-        <br/>
-        
+
+        <br>
+        <br>
+
         <div id="extension-followers-response">
             <p id="extension-followers-response-data"></p>
         </div>
-        
-        <br/>
+
+        <br>
 
     </div>
-    
-    <button id="extension-followers-add-button" class="icon-button" aria-label="New"></button>
-    
+
+	<button id="extension-followers-add-button" class="icon-button" aria-label="New"></button>
+
 </div>
 
+<div id="extension-followers-variables-content">
+
+	<div id="extension-followers-variables-content-container">
+		<h3 id="extension-followers-variables-title">Variables</h3>
+	    <div id="extension-followers-variables-not-ready-warning" style="display:none">
+	        <h1>Not ready yet</h1>
+	        <p>Variables waits 20 seconds before starting so that all other addons have had some time to generate all the required device information.</p>
+	        <p>Please come back in 20 seconds.</p>
+	    </div>
+
+        <!--
+        <p>〰 ϟ ↗</p>
+        -->
+		
+
+		<div id="extension-followers-variables-list"></div>
+
+	    <div id="extension-followers-variables-original-item" class="extension-followers-item">
+
+            <div class="extension-followers-item-sentence">
+                <div class="extension-followers-item-sentence-part extension-followers-show-if-developer">
+                    <span class="extension-followers-variables-item-unique_id"></span>
+                </div>
+            	<div class="extension-followers-item-sentence-part">
+					<input class="extension-followers-name" type="text" placeholder="Variable name">
+                    <input class="extension-followers-value" type="number" value="0" disabled>
+                </div>
+                <div class="extension-followers-item-sentence-part">
+                    <span class="extension-followers-item-trigger-part extension-followers-sentence-word">may&nbsp;&nbsp;</span>
+					<select class="extension-followers-dropdown extension-followers-type">
+						<option value="range">↔ range between</option>
+						<option value="loop">↻ loop between</option>
+						<option value="bounce">⇄ bounce between</option>
+	  					<option value="stay_above">↦ stay above</option>
+                        <option value="stay_below">↤ stay below</option>
+                        <option value="stay_below">∞ start at</option>
+	                </select>
+				
+                    <span>
+                        <input type="number" step="0.001" class="extension-followers-limit extension-followers-limit1" value="0" placeholder="minimum">
+                        <span class="extension-followers-limit2-wrapper">&nbsp;to&nbsp;&nbsp;
+                        <input type="number" step="0.001" class="extension-followers-limit extension-followers-limit2" value="100" placeholder="maximum"></span>.
+                    </span>
+                </div>
+
+                <!--
+                <div class="extension-followers-item-sentence-part extension-followers-item-sentence-part-inter extension-followers-variables-whenever">
+                    Whenever
+                </div>
+                -->
+
+                <div class="extension-followers-variables-item-triggers-list extension-followers-item-sentence-part extension-followers-item-sentence-part-inter"></div>
+
+                <div class="extension-followers-variables-item-trigger-buttons-container extension-followers-item-sentence-part">
+                    <button class="text-button extension-followers-variables-add-property-button"
+                        data-extension-followers-variables-trigger="property">+ Property</button>
+                    <!--
+                    <button class="text-button extension-followers-variables-add-action-button"
+                        data-extension-followers-variables-trigger="action">+ Action</button>
+                    <button class="text-button extension-followers-variables-add-event-button"
+                        data-extension-followers-variables-trigger="event">+ Event</button>
+                    
+                    <button class="text-button extension-followers-variables-add-time-button"
+                        data-extension-followers-variables-trigger="time">+ Time</button>
+                    -->
+                    <!--
+                    <button class="text-button extension-followers-variables-add-reset-button"
+                        data-extension-followers-variables-trigger="reset">+ Reset</button>
+                    -->
+                </div>
+
+            </div>
+
+            <div class="extension-followers-item-menu">
+                <div class="extension-followers-item-left">
+                    <form class="extension-followers-switch-container">
+                        <input type="checkbox" id="extension-followers-variables-toggle-checkbox" class="extension-followers-switch-checkbox extension-followers-enabled">
+                        <label class="extension-followers-switch-slider" for="extension-followers-variables-toggle-label"></label>
+                    </form>
+                </div>
+
+                <div class="extension-followers-item-right">
+                    <div class="extension-followers-item-delete-button">&nbsp;</div>
+                </div>
+            </div>
+
+            <div class="rule-edit-overlay delete">
+                <div class="rule-delete-dialog">
+                    <p>Are you sure you want to remove this variable permanently?</p>
+                    <input class="rule-delete-cancel-button" type="button" data-l10n-id="rule-delete-cancel-button" value="Cancel">
+                    <input class="rule-delete-confirm-button" type="button" value="Remove">
+                </div>
+            </div>
+
+        </div>
+
+        
+        <div id="extension-followers-variables-original-change-selectors" class="extension-followers-variables-change-container">
+            <span class="extension-followers-happens">&nbsp;happens</span>
+            <select class="extension-followers-dropdown extension-followers-boolean_change">
+                <option value="happens">happens</option>
+                <option value="switches_on">switches on</option>
+                <option value="switches_off">switches off</option>
+            </select>
+            <select class="extension-followers-dropdown extension-followers-number_change">
+                <option value="happens">happens</option>
+                <option value="happens_and_is">happens and is</option>
+                <option value="happens_and_is_not">happens and is not</option>
+                <option value="happens_above">happens above</option>
+                <option value="happens_below">happens below</option>
+            </select>
+            <select class="extension-followers-dropdown extension-followers-string_change">
+                <option value="happens">happens</option>
+                <option value="becomes">becomes</option>
+            </select>
+            <input class="extension-followers-change_value" type="text">
+
+            <select class="extension-followers-dropdown extension-followers-change_enum_value"></select>
+            
+
+        </div>
 
 
 
+	</div>
 
+    <button id="extension-followers-variables-add-button" class="icon-button" aria-label="New"></button>
+    
+</div>

@@ -3,14 +3,15 @@
   "content_scripts": [
     {
       "css": [
-        "css/extension.css"
+        "css/extension.css",
+		"css/variables.css"
       ],
       "js": [
         "js/extension.js"
       ]
     }
   ],
-  "description": "Allows you to let one property follow the changes of another property",
+  "description": "Allows you to let one property follow the changes of another property. Also allows you to create variables that go up or down based on button presses or other events.",
   "gateway_specific_settings": {
     "webthings": {
       "exec": "python3 {path}/main.py",

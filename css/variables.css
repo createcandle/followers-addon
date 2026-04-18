@@ -1,0 +1,267 @@
+
+#extension-followers-variables-content-container{
+	margin-bottom:30vh;
+}
+body.kiosk #extension-followers-variables-content-container{
+	margin-bottom: 50vh;
+}
+
+#extension-variables-menu-item{
+	background-image:url('../images/variables-menu-icon.svg');
+	background-repeat: no-repeat;
+}
+
+#extension-followers-variables-list{
+	max-width: 140rem;
+	margin: 0 auto;
+}
+	   
+
+#extension-followers-variables-content-container .extension-followers-item-sentence{
+	position: relative;
+}
+
+
+#extension-followers-variables-original-change-selectors,
+#extension-followers-view select.extension-followers-increases:has(option[value="set_to"]:checked)~select.extension-followers-by,
+#extension-followers-view select.extension-followers-increases:has(option[value="set_to"]:checked)~.extension-followers-variables-by-text,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="integer"] select.extension-followers-increases:not(:has(option[value="set_to"]:checked)) ~ select.extension-followers-by:has(option[value="by_its_value"]:checked) ~ .extension-followers-amount,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="float"] select.extension-followers-increases:not(:has(option[value="set_to"]:checked)) ~ select.extension-followers-by:has(option[value="by_its_value"]:checked) ~ .extension-followers-amount,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="number"] select.extension-followers-increases:not(:has(option[value="set_to"]:checked)) ~ select.extension-followers-by:has(option[value="by_its_value"]:checked) ~ .extension-followers-amount,
+.extension-followers-item[data-extension-followers-variables-item-type="bounce"] .extension-followers-variables-item-hide-if-bounce,
+.extension-followers-item:not([data-extension-followers-variables-item-type="bounce"]) .extension-followers-variables-item-show-if-bounce,
+.extension-followers-item[data-extension-followers-variables-item-type="stay_below"] .extension-followers-limit1-wrapper,
+.extension-followers-item[data-extension-followers-variables-item-type="stay_above"] .extension-followers-limit2-wrapper,
+.extension-followers-item[data-extension-followers-variables-item-type="start_at"] .extension-followers-limit2-wrapper,
+.extension-followers-variables-trigger-item:not([data-extension-followers-variables-trigger-property1-type="boolean"]) .extension-followers-variables-item-show-if-boolean,
+.extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="boolean"] .extension-followers-variables-item-hide-if-boolean,
+.extension-followers-variables-trigger-item:not([data-extension-followers-variables-trigger-property1-type="integer"]):not([data-extension-followers-variables-trigger-property1-type="float"]):not([data-extension-followers-variables-trigger-property1-type="number"]) .extension-followers-variables-item-show-if-number,
+.extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="integer"] .extension-followers-variables-item-hide-if-number,
+.extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="float"] .extension-followers-variables-item-hide-if-number,
+.extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="number"] .extension-followers-variables-item-hide-if-number,
+#extension-followers-view.extensions-followers-view-show-variables #extension-followers-content,
+#extension-followers-view:not(.extensions-followers-view-show-variables) #extension-followers-variables-content-container{
+	display:none!important;
+}
+
+/*
+select.extension-followers-by:not(:has(option[value="set_to"]:checked))~
+extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="number"] select.extension-followers-by:has(option[value="by_its_value"]:checked)~.extension-followers-amount
+
+*/
+
+
+.extension-followers-variables-item-triggers-list:not(:empty)::before{
+	content:'Whenever';
+	display:block;
+	padding:2rem 0 .5rem 0;
+}
+
+
+#extension-followers-view input[type="number"].extension-followers-value{
+	font-size:10rem;
+	position:absolute;
+	top:0;
+	right:0;
+	padding-right:0;
+	width:12rem;
+	max-width: 12rem;
+	height: auto;
+	text-align:right;
+	overflow:visible;
+	background-color:transparent;
+	color:white;
+	font-weight:100;
+	font-style:italic;
+	opacity:.3;
+	white-space: nowrap;
+	letter-spacing: .12em;
+	pointer-events:none;
+}
+.extension-followers-sentence-word{
+	display: inline-block;
+	padding: .5rem 1rem .5rem 0;
+}
+.extension-followers-sentence-comma{
+	font-weight: bold;
+}
+.extension-followers-item-trigger-part{
+	display: inline-block;
+}
+
+.extension-followers-variables-trigger-item{
+	position:relative;
+	margin-left:6rem;
+	padding: 1rem 0;
+}
+.extension-followers-variables-trigger-item::before{
+	position:absolute;
+	left:-6rem;
+	top:.5rem;
+	font-size:3rem;
+	width:5rem;
+	height:5rem;
+	border-radius:2.5rem;
+	display:flex;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(0,0,0,.1);
+}
+
+.data-extension-followers-variables-trigger-delete-button{
+	position:absolute;
+	left: -5.5rem;
+	opacity: 1;
+}
+.data-extension-followers-variables-trigger-delete-button:hover{
+	box-shadow: inset 0 0 100px 10px rgba(255, 0, 0, .5);
+}
+
+.data-extension-followers-variables-item-is-enabled .data-extension-followers-variables-trigger-delete-button{
+	display:none;
+}
+
+/*
+#extension-followers-view select.extension-followers-boolean_change,
+#extension-followers-view select.extension-followers-number_change,
+#extension-followers-view select.extension-followers-string_change{
+	display:none;
+}
+*/
+
+#extension-followers-view .extension-followers-variables-change-container>*{
+	display:none;
+}
+
+
+
+#extension-followers-view select.extension-followers-increases:has(option[value="set_to"]:checked)~.extension-followers-amount,
+
+#extension-followers-view .extension-followers-variables-trigger-item:not([data-extension-followers-variables-trigger-property1-type]) span.extension-followers-happens,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="action"] span.extension-followers-happens,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="event"] span.extension-followers-happens,
+
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="boolean"] select.extension-followers-boolean_change,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="integer"] select.extension-followers-number_change,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="float"] select.extension-followers-number_change,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="number"] select.extension-followers-number_change,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="string"] select.extension-followers-string_change,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="enum"] select.extension-followers-string_change{
+	display:inline-block;
+}
+
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="float"] select.extension-followers-by:not(:has(option[value="set_to"]:checked)) ~ .extension-followers-change_value,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="integer"] select.extension-followers-by:not(:has(option[value="set_to"]:checked)) ~ .extension-followers-change_value,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="number"] select.extension-followers-by:not(:has(option[value="set_to"]:checked)) ~ .extension-followers-change_value,
+
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="float"] select.extension-followers-number_change:has(option[value="happens_and_is"]:checked)~.extension-followers-change_value,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="integer"] select.extension-followers-number_change:has(option[value="happens_and_is"]:checked)~.extension-followers-change_value,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="number"] select.extension-followers-number_change:has(option[value="happens_and_is"]:checked)~.extension-followers-change_value,
+
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="float"] select.extension-followers-number_change:has(option[value="happens_and_is_not"]:checked)~.extension-followers-change_value,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="integer"] select.extension-followers-number_change:has(option[value="happens_and_is_not"]:checked)~.extension-followers-change_value,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="number"] select.extension-followers-number_change:has(option[value="happens_and_is_not"]:checked)~.extension-followers-change_value,
+
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="float"] select.extension-followers-number_change:has(option[value="happens_above"]:checked)~.extension-followers-change_value,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="integer"] select.extension-followers-number_change:has(option[value="happens_above"]:checked)~.extension-followers-change_value,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="number"] select.extension-followers-number_change:has(option[value="happens_above"]:checked) ~ .extension-followers-change_value,
+
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="float"] select.extension-followers-number_change:has(option[value="happens_below"]:checked)~.extension-followers-change_value,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="integer"] select.extension-followers-number_change:has(option[value="happens_below"]:checked)~.extension-followers-change_value,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="number"] select.extension-followers-number_change:has(option[value="happens_below"]:checked)~.extension-followers-change_value,
+
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="enum"] select.extension-followers-string_change:has(option[value="becomes"]:checked) ~ .extension-followers-change_enum_value,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="enum"] select.extension-followers-string_change:has(option[value="stops_being"]:checked) ~ .extension-followers-change_enum_value,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="string"] select.extension-followers-string_change:has(option[value="becomes"]:checked) + .extension-followers-change_value,
+#extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="string"] select.extension-followers-string_change:has(option[value="stops_being"]:checked) + .extension-followers-change_value{
+	display:inline-block;
+}
+
+
+.extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="action"]::before{
+	content:'🎟️';
+}
+.extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="boolean"]::before {
+	content: '🔘';
+}
+.extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="string"]::before {
+	content: '📝';
+}
+.extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="enum"]::before {
+	content: '📋';
+}
+
+.extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="integer"]::before,
+.extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="float"]::before,
+.extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="number"]::before {
+	content: '💯';
+}
+
+#extension-followers-view .extension-followers-name{
+	width: calc(100% - 2rem);
+	padding: 1rem 1rem 1rem 0;
+	font-size: 2rem;
+	background: transparent;
+	color: white;
+	border-bottom: 1px dashed rgba(255, 255, 255, .5);
+	max-width: 40rem;
+	border-radius: 0;
+	font-weight: bold;
+}
+
+
+.extension-followers-variables-whenever{
+	margin-top:1.5rem;
+	margin-bottom:0;
+	padding-bottom:0
+}
+
+
+
+.extension-followers-variables-item-trigger-buttons-container {
+	text-align: right;
+}
+
+
+
+
+@media screen and (max-width: 640px) {
+
+	.extension-followers-item-trigger-part,
+	#extension-followers-view select,
+	#extension-followers-view input[type="text"]{
+		width:100%;
+		max-width:100%;
+	}
+	#extension-followers-view select{
+		margin:.7rem 0;
+	}
+
+	#extension-followers-view input[type="number"]{
+		width: 30%;
+		max-width: 30%;
+	}
+	/*
+	#extension-followers-view select.extension-followers-change_enum_value{
+		width: 90%;
+		max-width: 90%;
+	}
+	*/
+	.extension-followers-sentence-comma{
+		display:none;
+	}
+}
+
+
+@media screen and (min-width: 640px) {
+	#extension-followers-view .extension-followers-variables-trigger-item select {
+		max-width: 30rem;
+	}
+}
+
+@media screen and (min-width: 1500px) {
+	.extension-followers-variables-list {
+		margin-left: 10rem;
+		margin-right: 10rem;
+	}
+}
