@@ -105,12 +105,15 @@ class FollowersAPIHandler(APIHandler):
 
         self.websockets = {}
         self.websocket_threads = {}
+        
+        self.greyscale = False;
+        self.screensaver_scroll = True
 
         # LOAD CONFIG
         try:
             self.add_from_config()
         except Exception as ex:
-            print("Error loading config: " + str(ex))
+            print("caught error loading config: " + str(ex))
 
         #self.DEBUG = False
 
@@ -333,16 +336,28 @@ class FollowersAPIHandler(APIHandler):
                 if len(str(config['Host name'])) > 1:
                     self.persistent_data['websocket_port'] = int(config['Websocket port'])
 
+            if 'Show screensaver in black and white' in config:
+                self.greyscale = bool(config['Show screensaver in black and white'])
+                if self.DEBUG:
+                    print("-Show screensaver in black and white preference was in config: " + str(self.greyscale))
+            
+            if 'Disable screensaver auto-scroll' in config:
+                self.screensaver_scroll = not bool(config['Disable screensaver auto-scroll'])
+                if self.DEBUG:
+                    print("-Disable screensaver auto-scroll preference was in config: " + str(self.screensaver_scroll))
+                    
+            # Ignore missing properties?
+            if 'Ignore missing properties' in config:
+                self.ignore_missing_properties = bool(config['Ignore missing properties'])
+                if self.DEBUG:
+                    print("-Ignore missing properties preference was in config: " + str(self.ignore_missing_properties))
+
         except Exception as ex:
             if self.DEBUG:
                 print("caught error loading api token from settings: ", ex)
 
 
-        # Ignore missing properties?
-        if 'Ignore missing properties' in config:
-            self.ignore_missing_properties = bool(config['Ignore missing properties'])
-            if self.DEBUG:
-                print("-Ignore missing properties preference was in config: " + str(self.ignore_missing_properties))
+        
 
 
 
@@ -1009,7 +1024,8 @@ class FollowersAPIHandler(APIHandler):
                                         'variables': self.persistent_data['variables'],
                                         'debug': self.DEBUG,
                                         'ready': self.ready,
-                                        'token': token
+                                        'greyscale':self.greyscale,
+                                        'screensaver_scroll':self.screensaver_scroll,
                                     })
                             )
 
@@ -1023,8 +1039,7 @@ class FollowersAPIHandler(APIHandler):
                                         "state": False,
                                         "Message":" Internal error: no thing data",
                                         "debug": self.DEBUG,
-                                        "ready": self.ready,
-                                        "token": token
+                                        "ready": self.ready
                                     })
                             )
 

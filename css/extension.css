@@ -1,3 +1,7 @@
+#extension-followers-view{
+    font-size:1.6rem;
+}
+
 #extension-followers-icon,
 #extension-followers-variables-icon{
     display: inline-block;
@@ -39,6 +43,11 @@
     font-size: 1.6rem;
     padding: 0.5rem 1rem;
     border: none;
+    cursor:pointer;
+}
+
+#extension-followers-view input[type="button"]{
+    cursor: pointer;
 }
 
 
@@ -51,6 +60,12 @@
     border-radius: 2.8rem;
     cursor: pointer;
 }
+
+.extension-followers-hidden,
+body:not(.developer) .extension-followers-show-if-developer{
+    display:none!important;
+}
+
 
 /*  DELETE  */
 
@@ -196,7 +211,7 @@
     padding-right: 2rem !important;
     box-sizing: border-box;
 }
-.extension-followers-item-sentence > *:first-of-type {
+#extension-followers-content .extension-followers-item-sentence > *:first-of-type {
     padding-top: 2rem;
 }
 .extension-followers-item-sentence > *:last-of-type {

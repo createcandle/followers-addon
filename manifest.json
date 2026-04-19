@@ -11,7 +11,7 @@
       ]
     }
   ],
-  "description": "Allows you to let one property follow the changes of another property. Also allows you to create variables that go up or down based on button presses or other events.",
+  "description": "Allows you to let one property follow the changes of another property. It also allows you to create variables that go up or down based on button presses or other events.",
   "gateway_specific_settings": {
     "webthings": {
       "exec": "python3 {path}/main.py",
@@ -27,6 +27,7 @@
   "name": "Followers",
   "options": {
     "default": {
+      "Show screensaver in black and white": false,
       "Authorization token": "",
 	  "Ignore missing properties": false,
 	  "Websocket host": "localhost",
@@ -39,6 +40,14 @@
           "description": "It can happen that a follower rule no longer works because one of the properties is not available (yet). By default a missing property will cause the follower rule to be disabled. If you want to ignore missing properties, check this box.",
           "type": "boolean"
         },
+        "Show screensaver in black and white": {
+          "description": "This desaturates the Variables screensaver feature and displays it in shades of grey instead.",
+          "type": "boolean"
+        },
+        "Disable screensaver auto-scroll": {
+          "description": "This disables feature where the Variables screensaver slowly scrolls over all variables.",
+          "type": "boolean"
+        },
         "Websocket host": {
           "description": "Advanced. The websocket hostname. The default is 'localhost'.",
           "type": "string"
@@ -48,7 +57,7 @@
           "type": "integer"
         },
         "Authorization token": {
-          "description": "Advanced. To be allowed to get information on all your devices, this addon needs an 'authorization' code. Normally this is done automaticallty. It's basically a very long password. If you prefer you can generate it yourself under Settings -> Developer -> Create local authorization",
+          "description": "Advanced. To be allowed to get information on all your devices, this addon needs an 'authorization' code. Normally this is done automatically. It's basically a very long password. If you prefer you can generate it yourself under Settings -> Developer -> Create local authorization while in developer mode",
           "type": "string"
         },
         "Debugging": {
@@ -61,7 +70,7 @@
     }
   },
   "short_name": "Followers",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "web_accessible_resources": [
     "css/*.css",
     "images/*.svg",

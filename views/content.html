@@ -146,12 +146,10 @@
 	    <div id="extension-followers-variables-original-item" class="extension-followers-item">
 
             <div class="extension-followers-item-sentence">
-                <div class="extension-followers-item-sentence-part extension-followers-show-if-developer">
-                    <span class="extension-followers-variables-item-unique_id"></span>
-                </div>
             	<div class="extension-followers-item-sentence-part extension-followers-variables-value-container">
 					<input class="extension-followers-name" type="text" placeholder="Variable name">
-                    <input class="extension-followers-value" type="number" value="0" disabled>
+                    <span class="extension-followers-variables-item-unique_id extension-followers-show-if-developer"></span>
+                    <input class="extension-followers-value" type="number" value="0">
                 </div>
                 <div class="extension-followers-item-sentence-part">
                     <span class="extension-followers-item-trigger-part extension-followers-sentence-word">may&nbsp;&nbsp;</span>
@@ -161,12 +159,12 @@
 						<option value="bounce">⇄ bounce between</option>
 	  					<option value="stay_above">↦ stay above</option>
                         <option value="stay_below">↤ stay below</option>
-                        <option value="stay_below">∞ start at</option>
+                        <option value="start_at">∞ start at</option>
 	                </select>
 				
                     <span>
                         <input type="number" step="0.001" class="extension-followers-limit extension-followers-limit1" value="0" placeholder="minimum">
-                        <span class="extension-followers-limit2-wrapper">&nbsp;to&nbsp;&nbsp;
+                        <span class="extension-followers-limit2-wrapper"><span class="extension-followers-limit2-to">&nbsp;to&nbsp;&nbsp;</span>
                         <input type="number" step="0.001" class="extension-followers-limit extension-followers-limit2" value="100" placeholder="maximum"></span>.
                     </span>
                 </div>
