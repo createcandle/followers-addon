@@ -28,6 +28,7 @@
   "options": {
     "default": {
       "Show screensaver in black and white": false,
+	  "Disable screensaver auto-scroll": false,
       "Authorization token": "",
 	  "Ignore missing properties": false,
 	  "Websocket host": "localhost",
