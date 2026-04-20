@@ -5,7 +5,7 @@
 		//console.log("Adding followers addon to menu");
 		this.addMenuEntry('Followers');
 		this.addMenuEntry('Variables');
-
+		/*
 		console.log("App: ", typeof App);
 		console.log("this.APP: ", typeof this.APP);
 		console.log("window: ", window);
@@ -17,8 +17,6 @@
 			console.log('API: things: ', things);
 		});
 
-
-
 		API.getThing('internet-radio').then((thing) => {
 			console.log('API: thing: ', thing);
 			console.log("typeof thing.subscribe: ", typeof thing.subscribe);
@@ -28,7 +26,7 @@
 			console.log("typeof thing.APP: ", typeof thing.APP);
 			console.log("typeof this.APP: ", typeof this.APP);
 		});
-
+		*/
 
 		this.content = '';
 		this.debug = false;
@@ -124,14 +122,39 @@
 		})
 		.catch((e) => console.error('Failed to fetch content:', e));
 
-		//this.showMenuButton();
 
 		if (typeof this.subscribeToThingProperties == 'function'){
-			this.subscribeToThingProperties('candle-variables', (message) => {
-				if(this.debug){
-					console.log("followers debug: subscribeToThingProperties: received message: ", message);
+			API.getThings().then((things) => {
+				//console.log('API: things: ', things);
+				for(const index in things){
+					if(typeof things[index]['href'] == '/things/candle-variables'){
+						// Candle-variables thing exists, so let's subscribe to updates about its properties
+						this.subscribeToThingProperties('candle-variables', (message) => {
+							if(this.debug){
+								console.log("followers debug: variables: subscribeToThingProperties: received message: ", message);
+							}
+							for (let [unique_id, details] of Object.entries(this.variables)) {
+								if(typeof message[unique_id] != 'undefined'){
+									if(this.debug){
+										console.log("followers debug: found the variable that was updated.  unique_id and new value: ", unique_id, message[unique_id]);
+									}
+									this.variables[unique_id]['value'] = message[unique_id];
+									this.update_variables_screensaver_item(unique_id);
+									const variable_item_value_el = this.view.querySelector('#extension-followers-variables-list > .extension-followers-item[data-extension-followers-variables-item-unique-id="' + unique_id + '"] .extension-followers-value');
+									if(variable_item_value_el){
+										variable_item_value_el.value = message[unique_id];
+									}
+								}
+								break
+							}
+							
+						});
+						break
+					}
+						
 				}
-			})
+			});
+			
 		}
 
 	}
@@ -1858,27 +1881,41 @@
 
 	update_variables_screensaver(){
 		let variable_ids = Object.keys(this.variables);
-		console.log("variable_ids: ", variable_ids);
+		if(this.debug){
+			console.log("followers debug: update_variables_screensaver: variable_ids: ", variable_ids);
+		}
 
-		const list_el = this.view.querySelector('#extension-followers-variables-list');
+		//const list_el = this.view.querySelector('#extension-followers-variables-list');
 
 		for (var vi in variable_ids) {
 			const unique_id = variable_ids[vi];
-			const variable_item_el = list_el.querySelector('.extension-followers-item[data-extension-followers-variables-item-unique-id="' + unique_id + '"');
+			this.update_variables_screensaver_item(unique_id);
+		}
+	}
+	
+	update_variables_screensaver_item(unique_id=null){
+		if(typeof unique_id == 'string'){
+			const variable_item_el = this.view.querySelector('.extension-followers-item[data-extension-followers-variables-item-unique-id="' + unique_id + '"');
 			if (variable_item_el){
+				if(typeof this.variables[unique_id]['value'] == 'undefined'){
+					if(this.debug){
+						console.error("\nfollowers debug: variables: missing value: ", this.variables[unique_id]);
+					}
+					return
+				}
 				let pixel_value = this.variables[unique_id]['value'];
 				if (typeof pixel_value == 'string'){
 					pixel_value = parseInt(pixel_value);
 				}
 				if (typeof pixel_value != 'number') {
-					continue
+					return
 				}
 
 				pixel_value = Math.abs(Math.round(pixel_value));
 				if(this.debug){
 					console.log("\nfollowers debug: update_variables_screensaver: pixel_value before: ", pixel_value);
 				}
-				
+			
 				let scaling_factor = 1;
 				if (this.variables[unique_id]['type'] == 'range' || this.variables[unique_id]['type'] == 'loop' || this.variables[unique_id]['type'] == 'bounce'){
 					if (typeof this.variables[unique_id]['limit1'] == 'number' && typeof this.variables[unique_id]['limit2'] == 'number'){
@@ -1907,7 +1944,6 @@
 				variable_item_el.querySelector('.extension-followers-variables-value-container').style.setProperty('--s', pixel_value + 'px');
 			}
 		}
-
 	}
 
 

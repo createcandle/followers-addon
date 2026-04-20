@@ -33,6 +33,9 @@
     width: 8rem;
     margin: 2rem auto;
 }
+#extension-followers-variables-title{
+	background-image: url("../images/variables-menu-icon.svg");
+}
 
 
 .extension-followers-needs-a-value{

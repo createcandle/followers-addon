@@ -80,12 +80,13 @@ class FollowersDevice(Device):
 
         self._id = 'candle-variables'
         self.id = 'candle-variables'
+        self.name = 'candle-variables'
         self.adapter = adapter
         self.DEBUG = self.adapter.DEBUG
 
         self._type = ["MultiLevelSensor"]
 
-        self.name = 'candle-variables'
+        
         self.title = 'Variables'
         self.description = 'Thing with properties that represent variables'
 
