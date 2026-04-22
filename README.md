@@ -12,7 +12,7 @@ Allow properties to follow each other's changes, live. For example, you could:
 You can also do a reverse follow, where one value rises as another one lowers. For example:
 - A lightbulb could respond to how much sunlight another sensor has detected. As the sun goes down, your light can automatically increase in brightness.
 
-![name-of-you-image](https://github.com/flatsiedatsie/followers-addon/blob/master/followers_screenshot.png?raw=true)
+![followers-screenshot](https://github.com/flatsiedatsie/followers-addon/blob/master/followers_screenshot.png?raw=true)
 
 ## Variables
 This allows you to create variable values that increase or decrease depending on all kinds of things happening on your controller.
@@ -22,3 +22,4 @@ Variables are a great starting point for creating Followers. For example, the "l
 
 Together they form a nice automation system that compliment the other options (such as creating rulels and scenes).
 
+![variables-screenshot](https://github.com/flatsiedatsie/followers-addon/blob/master/followers_screenshot.jpg?raw=true)
