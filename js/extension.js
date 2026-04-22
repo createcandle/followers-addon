@@ -7,7 +7,7 @@
 		this.addMenuEntry('Variables');
 		/*
 		console.log("App: ", typeof App);
-		console.log("this.APP: ", typeof this.APP);
+		console.log("this.APP: ", typeof this.APPf);
 		console.log("window: ", window);
 		console.log("this: ", this);
 		console.log("this.App: ", this.App);
@@ -35,7 +35,7 @@
 		this.screensaver_scroll = true;
 
 		this.showing_not_ready_yet_warning = false;
-		this.showing_screensaver = false;
+		//this.showing_screensaver = false;
 
 		this.item_elements = ['limit1', 'limit2', 'thing1', 'property1', 'limit3', 'limit4', 'thing2', 'property2'];
 		this.variables_elements = ['name','type','limit1','limit2'];
@@ -64,11 +64,21 @@
 		this.followers_menu_item_el = document.getElementById('extension-dashboard-menu-item');
 		if(this.followers_menu_item_el){
 			this.followers_menu_item_el.addEventListener('click', () => {
+				
+				//if(document.body.classList.contains('screensaver')){
+				//	this.at_variables = true;
+				//	this.view.classList.add('extensions-followers-view-show-variables');
+				//}
+				
 				this.view.classList.remove('extensions-followers-view-show-variables');
 				if(this.at_variables){
 					this.at_variables = false;
 					this.regenerate_items();
 				}
+				
+				this.regenerate_variables(); // generate it once, just to ensure that the screensaver will work
+				
+				
 			});
 		}
 		/*
@@ -363,9 +373,10 @@
 
 					if (typeof body.variables != 'undefined') {
 						this.variables = body.variables;
-						if (this.at_variables) {
-							this.regenerate_variables();
-						}
+						//if (this.at_variables || document.body.classList.contains('screensaver')) {
+						//	this.regenerate_variables();
+						//}
+						this.regenerate_variables();
 					}
 
 					if (typeof body.greyscale == 'boolean') {
@@ -380,10 +391,7 @@
 
 					if (typeof body.screensaver_scroll == 'boolean') {
 						this.screensaver_scroll = body.screensaver_scroll;
-						if (this.screensaver_scroll) {
-							this.view.classList.add('extension-followers-screensaver-scroll');
-						}
-						else {
+						if (!this.screensaver_scroll) {
 							this.view.classList.remove('extension-followers-screensaver-scroll');
 						}
 					}
@@ -573,7 +581,7 @@
 			const variables_list_el = this.view.querySelector('#extension-followers-variables-list');
 			if (variables_list_el) {
 				variables_list_el.addEventListener('click', () => {
-					if (this.showing_screensaver) {
+					if (document.body.classList.contains('screensaver')) {
 						this.stop_variables_screensaver();
 						//variables_list_el.closest('#extension-followers-variables-content').classList.remove('extension-followers-variables-screensaver');
 					}
@@ -1580,6 +1588,14 @@
 			}
 
 			this.update_variables_screensaver();
+
+			if(this.screensaver_scroll && Object.keys(this.variables).length > 10){
+				this.view.classList.add('extension-followers-screensaver-scroll');
+			}
+			else{
+				this.view.classList.remove('extension-followers-screensaver-scroll');
+			}
+
 		}
 		catch (err) {
 			if (this.debug) {
@@ -1593,100 +1609,100 @@
 
 
 
-		populate_thing_property_selector( thing_dropdown_el, selected_thing_id=null, property_dropdown_el=null, selected_property_id=null){
-			console.log("in populate_thing_property_selector.  selected_thing_id,selected_property_id: ", selected_thing_id, selected_property_id);
+	populate_thing_property_selector( thing_dropdown_el, selected_thing_id=null, property_dropdown_el=null, selected_property_id=null){
+		console.log("in populate_thing_property_selector.  selected_thing_id,selected_property_id: ", selected_thing_id, selected_property_id);
 
-			if (!thing_dropdown_el) {
-				console.error("populate_thing_property_selector: no select el provided");
-				return
+		if (!thing_dropdown_el) {
+			console.error("populate_thing_property_selector: no select el provided");
+			return
+		}
+
+		try {
+			thing_dropdown_el.innerHTML = '<option value="">-</option>';
+			if(property_dropdown_el){
+				property_dropdown_el.innerHTML = '<option value="">-</option>';
 			}
 
-		  	try {
-				thing_dropdown_el.innerHTML = '<option value="">-</option>';
-				if(property_dropdown_el){
-					property_dropdown_el.innerHTML = '<option value="">-</option>';
+			for( var thing in this.all_things ){
+				//console.log("\npopulate_thing_property_selector: this.all_things[thing]['title']: ", this.all_things[thing]['title']);
+				//console.log("populate_thing_property_selector: this.all_things[thing]['id'] = " + this.all_things[thing]['id']);
+				
+				let thing_id = this.all_things[thing]['id'];
+				const slash_index = this.all_things[thing]['id'].lastIndexOf('/');
+				if (slash_index != -1){
+					thing_id = this.all_things[thing]['id'].substring(slash_index + 1);
+				}
+				//console.log("populate_thing_property_selector:  thing_id,selected_thing_id: ", thing_id, " =?= ", selected_thing_id);
+				
+				if (thing_id == 'candle-variables'){
+					continue
 				}
 
-				for( var thing in this.all_things ){
-					//console.log("\npopulate_thing_property_selector: this.all_things[thing]['title']: ", this.all_things[thing]['title']);
-					//console.log("populate_thing_property_selector: this.all_things[thing]['id'] = " + this.all_things[thing]['id']);
-					
-					let thing_id = this.all_things[thing]['id'];
-					const slash_index = this.all_things[thing]['id'].lastIndexOf('/');
-					if (slash_index != -1){
-						thing_id = this.all_things[thing]['id'].substring(slash_index + 1);
+				const thing_option_el = document.createElement('option');
+				thing_option_el.value = thing_id;
+				thing_option_el.textContent = this.all_things[thing]['title'];
+
+				thing_dropdown_el.appendChild(thing_option_el);
+
+				if (typeof selected_thing_id == 'string' && thing_id == selected_thing_id && property_dropdown_el ){
+					if (this.debug) {
+						console.log("followers debug: variables: populate_thing_property_selector: pre-populating properties dropdown");
 					}
-					//console.log("populate_thing_property_selector:  thing_id,selected_thing_id: ", thing_id, " =?= ", selected_thing_id);
-					
-					if (thing_id == 'candle-variables'){
-						continue
+					//const property1_dropdown = clone.querySelectorAll('.extension-followers-variables-property1')[0];
+					const property_lists = this.get_property_lists(this.all_things[thing]['properties'], false); // false = do not skip booleans
+					if (this.debug) {
+						console.log("followers debug: variables: - property lists: ", property_lists);
 					}
+					//console.log(property_lists);
 
-					const thing_option_el = document.createElement('option');
-					thing_option_el.value = thing_id;
-					thing_option_el.textContent = this.all_things[thing]['title'];
-
-					thing_dropdown_el.appendChild(thing_option_el);
-
-					if (typeof selected_thing_id == 'string' && thing_id == selected_thing_id && property_dropdown_el ){
-						if (this.debug) {
-							console.log("followers debug: variables: populate_thing_property_selector: pre-populating properties dropdown");
-						}
-						//const property1_dropdown = clone.querySelectorAll('.extension-followers-variables-property1')[0];
-						const property_lists = this.get_property_lists(this.all_things[thing]['properties'], false); // false = do not skip booleans
-						if (this.debug) {
-							console.log("followers debug: variables: - property lists: ", property_lists);
-						}
-						//console.log(property_lists);
-
-						for( var title in property_lists['property1_list'] ){
-							//console.log("adding prop title:" + property_lists['property1_list'][title]);
-							const property_option = new Option(property_lists['property1_list'][title], property_lists['property1_system_list'][title]);
-							if (typeof selected_property_id == 'string' && property_lists['property1_list'][title] == selected_property_id) {
-								if (this.debug) {
-									console.log("followers debug: variables: populate_thing_property_selector: found the selected property");
-								}
-								property_option.selected = true;
-							}
-							property_dropdown_el.options[property_dropdown_el.options.length] = property_option;
-						}
-
-						const actions_lists = this.get_actions_lists(this.all_things[thing]);
-						if (this.debug) {
-							console.log("followers debug: variables: actions_lists: ", actions_lists);
-						}
-						for (var title in actions_lists) {
+					for( var title in property_lists['property1_list'] ){
+						//console.log("adding prop title:" + property_lists['property1_list'][title]);
+						const property_option = new Option(property_lists['property1_list'][title], property_lists['property1_system_list'][title]);
+						if (typeof selected_property_id == 'string' && property_lists['property1_list'][title] == selected_property_id) {
 							if (this.debug) {
-								console.log("followers debug: variables: adding action title:", actions_lists[title]);
+								console.log("followers debug: variables: populate_thing_property_selector: found the selected property");
 							}
-							const property_option = new Option(actions_lists[title], actions_lists[title]);
-							if (typeof selected_property_id == 'string' && actions_lists[title] == selected_property_id) {
-								if (this.debug) {
-									console.log("followers debug: variables: populate_thing_property_selector: found the selected action");
-								}
-								property_option.selected = true;
-							}
-							property_dropdown_el.options[property_dropdown_el.options.length] = property_option;
+							property_option.selected = true;
 						}
-
-						// TODO: events
-
-						property_dropdown_el.value = selected_property_id;
-						
+						property_dropdown_el.options[property_dropdown_el.options.length] = property_option;
 					}
-				}
 
-				if(typeof selected_thing_id == 'string'){
-					thing_dropdown_el.value = selected_thing_id;
-				}
+					const actions_lists = this.get_actions_lists(this.all_things[thing]);
+					if (this.debug) {
+						console.log("followers debug: variables: actions_lists: ", actions_lists);
+					}
+					for (var title in actions_lists) {
+						if (this.debug) {
+							console.log("followers debug: variables: adding action title:", actions_lists[title]);
+						}
+						const property_option = new Option(actions_lists[title], actions_lists[title]);
+						if (typeof selected_property_id == 'string' && actions_lists[title] == selected_property_id) {
+							if (this.debug) {
+								console.log("followers debug: variables: populate_thing_property_selector: found the selected action");
+							}
+							property_option.selected = true;
+						}
+						property_dropdown_el.options[property_dropdown_el.options.length] = property_option;
+					}
 
+					// TODO: events
+
+					property_dropdown_el.value = selected_property_id;
+					
+				}
 			}
-			catch (err) {
-				if (this.debug) {
-					console.error("followers debug: variables: caught error in populate_thing_property_selector: ", err);
-				}
+
+			if(typeof selected_thing_id == 'string'){
+				thing_dropdown_el.value = selected_thing_id;
+			}
+
+		}
+		catch (err) {
+			if (this.debug) {
+				console.error("followers debug: variables: caught error in populate_thing_property_selector: ", err);
 			}
 		}
+	}
 
 
 
@@ -1820,9 +1836,6 @@
 	}
 
 
-
-
-
 	get_property_description(desired_thing_id, desired_property_id) {
 		if (this.debug) {
 			console.log("followers debug: variables: in get_property_description.  desired_thing_id, desired_property_id: ", desired_thing_id, desired_property_id);
@@ -1854,29 +1867,22 @@
 	}
 
 
-
 	start_variables_screensaver(){
 		if (this.debug) {
 			console.log("followers debug: variables: in start_variables_screensaver");
 		}
-
+		/*
 		const variables_content_el = this.view.querySelector('#extension-followers-variables-content');
 		if (variables_content_el){
 			variables_content_el.classList.add('extension-followers-variables-screensaver');
 		}
-		
-		this.showing_screensaver = true;
-		/*
-		if(this.variables_screensaver_interval == null){
-			this.variables_screensaver_interval
-		}
 		*/
+		document.body.classList.add('screensaver');
+		
+		//this.showing_screensaver = true;
+		
 		this.update_variables_screensaver();
-
 	}
-
-
-
 
 
 	update_variables_screensaver(){
@@ -1893,7 +1899,11 @@
 		}
 	}
 	
+
 	update_variables_screensaver_item(unique_id=null){
+		if(this.debug){
+			console.log("in update_variables_screensaver_item.  unique_id: ", unique_id);
+		}
 		if(typeof unique_id == 'string'){
 			const variable_item_el = this.view.querySelector('.extension-followers-item[data-extension-followers-variables-item-unique-id="' + unique_id + '"');
 			if (variable_item_el){
@@ -1951,17 +1961,15 @@
 		if (this.debug) {
 			console.log("followers debug: variables: in stop_variables_screensaver");
 		}
+		/*
 		const variables_content_el = this.view.querySelector('#extension-followers-variables-content');
 		if (variables_content_el){
 			variables_content_el.classList.remove('extension-followers-variables-screensaver');
 		}
-		this.showing_screensaver = false;
+		*/
+		document.body.classList.remove('screensaver');
+		//this.showing_screensaver = false;
 	}
-
-
-
-
-
 
 
   }

@@ -40,11 +40,16 @@ body.kiosk #extension-followers-variables-content-container{
 .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="float"] .extension-followers-variables-item-hide-if-number,
 .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="number"] .extension-followers-variables-item-hide-if-number,
 #extension-followers-view.extensions-followers-view-show-variables #extension-followers-content,
-#extension-followers-view:not(.extensions-followers-view-show-variables) #extension-followers-variables-content-container,
-#extension-followers-variables-content.extension-followers-variables-screensaver .extension-followers-variables-item-unique_id{
+body:not(.screensaver) #extension-followers-view:not(.extensions-followers-view-show-variables) #extension-followers-variables-content-container,
+body#path-extensions-followers.screensaver #extension-followers-view > #extension-followers-content,
+body#path-extensions-followers.screensaver #extension-followers-variables-content .extension-followers-variables-item-unique_id{
 	display:none!important;
 }
 
+
+body#path-extensions-followers.screensaver #extension-followers-view >#extension-followers-variables-content{
+	display:block!important;
+}
 /*
 select.extension-followers-by:not(:has(option[value="set_to"]:checked))~
 extension-followers-view .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="number"] select.extension-followers-by:has(option[value="by_its_value"]:checked)~.extension-followers-amount
@@ -86,11 +91,11 @@ extension-followers-view .extension-followers-variables-trigger-item[data-extens
 	border-radius: 0;
 }
 /*
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) input[type="number"].extension-followers-value{
+body#path-extensions-followers:not(.screensaver) #extension-followers-variables-content input[type="number"].extension-followers-value{
 	height: 6.5rem;
 }
 */
-#extension-followers-variables-content.extension-followers-variables-screensaver input[type="number"].extension-followers-value{
+body#path-extensions-followers.screensaver #extension-followers-variables-content input[type="number"].extension-followers-value{
 	pointer-events:none;
 	max-height: none;
 }
@@ -224,6 +229,17 @@ extension-followers-view .extension-followers-variables-trigger-item[data-extens
 	margin-bottom:1rem;
 	overflow:hidden;
 	min-height:6rem;
+	position:relative;
+}
+
+.extension-followers-variables-value-container-bg{
+	position:absolute;
+	width:100%;
+	height:100%;
+	z-index:-1;
+	top: 0;
+    left: 0;
+	opacity:.5;
 }
 
 #extension-followers-view .extension-followers-name{
@@ -243,7 +259,7 @@ extension-followers-view .extension-followers-variables-trigger-item[data-extens
 	padding-left: 1rem;
 	margin-left: -1rem;
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver .extension-followers-name{
+body#path-extensions-followers.screensaver .extension-followers-name{
 	border-bottom: none;
 	font-size: 4rem;
 	max-width:100%;
@@ -289,18 +305,18 @@ extension-followers-view .extension-followers-variables-trigger-item[data-extens
 	z-index: 2;
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-play-overlay {
+body#path-extensions-followers.screensaver #extension-followers-variables-play-overlay {
 	display: block;
 }
 */
 
-#extension-followers-view.extension-followers-greyscale #extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list{
+body#path-extensions-followers.screensaver #extension-followers-view.extension-followers-greyscale #extension-followers-variables-list{
 	filter: grayscale(100%);
 }
 
-#extension-followers-view.extension-followers-screensaver-scroll #extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-content-container{
-	width:100hw;
-	height: 100hw;
+body#path-extensions-followers.screensaver #extension-followers-view #extension-followers-variables-content-container{
+	width:100vh;
+	height: 100vw;
 	position: fixed;
 	top:0;
 	left:0;
@@ -308,14 +324,17 @@ extension-followers-view .extension-followers-variables-trigger-item[data-extens
 	right:0;
 	overflow:auto;
 }
-#extension-followers-view.extension-followers-screensaver-scroll #extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list{
-	animation: scroll-vertical 120s ease-in-out infinite;
-	animation-delay: 5s;
+body#path-extensions-followers.screensaver #extension-followers-variables-list{
 	height:auto;
-	min-height: auto;
-	max-height: auto;
+	min-height: 100vh;
+	max-height: none;
 	overflow: visible;
 }
+body#path-extensions-followers.screensaver #extension-followers-view .extension-followers-screensaver-scroll #extension-followers-variables-list{
+	animation: scroll-vertical 120s ease-in-out infinite;
+	animation-delay: 5s;
+}
+
 @keyframes scroll-vertical {
 	0% {
 		top: 0;
@@ -329,6 +348,7 @@ extension-followers-view .extension-followers-variables-trigger-item[data-extens
 		top: 0;
 	}
 }
+
 
 
 #extension-followers-variables-play-button-container {
@@ -350,17 +370,17 @@ extension-followers-view .extension-followers-variables-trigger-item[data-extens
 	cursor: pointer;
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-play-button-container,
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-add-button{
+body#path-extensions-followers.screensaver #extension-followers-variables-play-button-container,
+body#path-extensions-followers.screensaver #extension-followers-variables-add-button{
 	display:none;
 }
 
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list {
+body#path-extensions-followers:not(.screensaver) #extension-followers-variables-list {
 	max-width: 140rem;
 	margin: 0 auto;
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -369,25 +389,28 @@ extension-followers-view .extension-followers-variables-trigger-item[data-extens
 	overflow: auto;
 	height: 100vh;
 	background-color: black;
+	display:flex;
+	flex-direction:column;
 }
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list>.extension-followers-item {
 	width: 100%;
 	min-height: 20rem;
 	margin-top:0;
 	border-radius:0;
+	flex-grow:1;
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item> :not(.extension-followers-item-sentence),
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item .extension-followers-item-sentence div:not(.extension-followers-variables-value-container) {
+body#path-extensions-followers.screensaver #extension-followers-variables-list > .extension-followers-item > :not(.extension-followers-item-sentence),
+body#path-extensions-followers.screensaver #extension-followers-variables-list > .extension-followers-item .extension-followers-item-sentence > div:not(.extension-followers-variables-value-container) {
 	display: none;
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver input[type="number"].extension-followers-value {
+body#path-extensions-followers.screensaver  input[type="number"].extension-followers-value {
 	opacity:0;
 }
-body.developer #extension-followers-variables-content.extension-followers-variables-screensaver input[type="number"].extension-followers-value{
+body#path-extensions-followers.screensaver.developer input[type="number"].extension-followers-value{
 	opacity:1;
 }
 
@@ -398,8 +421,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 
 /*  thanks to: https://css-pattern.com/  */
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(1),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(1) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(1),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(1) .extension-followers-variables-value-container-bg {
 	--s: 70px;
 	--c1: #655643;
 	--c2: #80bca3;
@@ -416,8 +439,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 }
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(2),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(2) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(2),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(2) .extension-followers-variables-value-container-bg {
 	--s: 125px;
 	--c1: #f8ca00;
 	--c2: #bd1550;
@@ -430,14 +453,14 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 		conic-gradient(from 45deg at calc(2*100%/3) calc(100%/3), var(--_g), var(--c1) 0 225deg, var(--c2) 0);
 	background-size: var(--s) var(--s);
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(2) {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(2) {
 	animation-name: jitter1;
 	animation-duration: 250s;
 }
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(3),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(3) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(3),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(3) .extension-followers-variables-value-container-bg {
 	--s: 41px;
 	--c1: #f2c45a;
 	--c2: #5e8c6a;
@@ -460,8 +483,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(4),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(4) .extension-followers-variables-value-container{
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(4),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(4) .extension-followers-variables-value-container{
 	--s: 150px;
 	--fun4c1: #ff847c;
 	--fun4c2: #e84a5f;
@@ -475,13 +498,13 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 		conic-gradient(from -45deg, var(--fun4c1) 90deg, var(--fun4c2) 0 225deg, var(--fun4c4) 0);
 	background-size: var(--s) var(--s);
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(4){
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(4){
 	animation-name: jitter2;
 	animation-duration: 160s;
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(5),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(5) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(5),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(5) .extension-followers-variables-value-container-bg {
 	--s: 100px;
 	--fun5c1: #e1f5c4;
 	--fun5c2: #3b8183;
@@ -497,8 +520,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 	background-size: var(--s) calc(2*var(--s));
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(6),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(6) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(6),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(6) .extension-followers-variables-value-container-bg {
 	--s: 194px;
 	--fun6c1: #f6edb3;
 	--fun6c2: #acc4a3;
@@ -515,13 +538,13 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 		linear-gradient(-150deg, var(--_l)) var(--fun6c3);
 	background-size: calc(0.866*var(--s)) var(--s);
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(6) {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(6) {
 	animation-name: jitter1;
 	animation-duration: 403s;
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(7),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(7) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(7),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(7) .extension-followers-variables-value-container-bg {
 	--s: 45px;
 	--fun7c1: #c02942;
 	--fun7c2: #53777a;
@@ -536,8 +559,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 }
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(8),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(8) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(8),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(8) .extension-followers-variables-value-container-bg {
 	
 	--s: 64px;
 	--c1: #e0e4cc;
@@ -550,13 +573,13 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 		conic-gradient(from 135deg at 50% 0, var(--c1) var(--_g)) var(--c2);
 	background-size: calc(2*var(--s)) var(--s);
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(8) {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(8) {
 	animation-name: jitter2;
 	animation-duration: 203s;
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(9),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(9) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(9),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(9) .extension-followers-variables-value-container-bg {
 	--s: 125px;
 	--c1: #f8ca00;
 	--c2: #bd1550;
@@ -570,8 +593,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 	background-size: var(--s) var(--s);
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(10),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(10) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(10),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(10) .extension-followers-variables-value-container-bg {
 	--s: 100px;
 	--c1: #1bb0ce;
 	--c2: #dad6ca;
@@ -591,14 +614,14 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 	background-position: 0 0, var(--s) var(--s);
 	background-size: calc(2*var(--s)) calc(2*var(--s));
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(10) {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(10) {
 	animation-name: jitter1;
 	animation-duration: 302s;
 }
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(11),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(11) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(11),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(11) .extension-followers-variables-value-container-bg {
 	--s: 100px;
 	--c1: #f8b195;
 	--c2: #355c7d;
@@ -612,8 +635,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 	background-size: var(--s) var(--s);
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(12),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(12) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(12),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(12) .extension-followers-variables-value-container-bg {
 	--s: 120px;
 	--c1: #1a2030;
 	--c2: #0f9177;
@@ -627,13 +650,13 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 		conic-gradient(var(--c2) 25%, var(--c3) 0 50%, var(--c4) 0 75%, var(--c5) 0);
 	background-size: var(--s) var(--s);
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(12) {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(12) {
 	animation-name: jitter1;
 	animation-duration: 132s;
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(13),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(13) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(13),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(13) .extension-followers-variables-value-container-bg {
 	--s: 84px;
 	--c1: #ffffff;
 	--c2: #71e9a0;
@@ -650,8 +673,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 }
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(14),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(14) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(14),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(14) .extension-followers-variables-value-container-bg {
 	--s: 100px;
 	--c1: #cc2a41;
 	--c2: #351330;
@@ -666,14 +689,14 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 		radial-gradient(var(--c2) 14%, var(--c1) 16%) calc(var(--s)/2) calc(var(--s)/2);
 	background-size: var(--s) var(--s);
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(14) {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(14) {
 	animation-name: jitter2;
 	animation-duration: 182s;
 }
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(15),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(15) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(15),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(15) .extension-followers-variables-value-container-bg {
 	--s: 100px;
 	--c1: #99b2b7;
 	--c2: #edc951;
@@ -687,8 +710,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 	background-size: var(--s) var(--s);
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(16),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(16) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(16),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(16) .extension-followers-variables-value-container-bg {
 	--s: 160px;
 	--c1: #e08e79;
 	--c2: #f1d4af;
@@ -705,13 +728,13 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 			var(--c1) 0 210deg, var(--c2) 0 75%, var(--c3) 0);
 	background-size: var(--s) var(--s);
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(16) {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(16) {
 	animation-name: jitter1;
 	animation-duration: 112s;
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(17),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(17) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(17),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(17) .extension-followers-variables-value-container-bg {
 	--s: 80px;
 	--c1: #a2d2ff;
 	--c2: #9a031e;
@@ -723,8 +746,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 		radial-gradient(var(--c1) 34%, var(--c2) 36%) 0 0/var(--s) var(--s);
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(18),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(18) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(18),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(18) .extension-followers-variables-value-container-bg {
 	--s: 37px;
 	--c1: #2fb8ac;
 	--c2: #ecbe13;
@@ -739,15 +762,15 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 		var(--g3) var(--s) 0, var(--g3) 0 calc(1.73*var(--s)) var(--c2);
 	background-size: calc(2*var(--s)) calc(3.46*var(--s));
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(18) {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(18) {
 	animation-name: jitter2;
 	animation-duration: 302s;
 }
 
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(19),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(19) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(19),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(19) .extension-followers-variables-value-container-bg {
 	--s: 20px;
 	--c1: #c02942;
 	--c2: #53777a;
@@ -762,8 +785,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 	background-size: calc(2*(var(--s) + var(--g))) calc(2*(var(--s) + var(--g)));
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(20),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(20) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(20),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(20) .extension-followers-variables-value-container-bg {
 	--s: 105px;
 	--c1: #b9b9b9;
 	--c2: #dcdcdc;
@@ -777,14 +800,14 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 			var(--c2) 0 270deg, var(--c1) 0 286deg, var(--c2) 0 331deg, var(--c3) 0);
 	background-size: var(--s) calc(var(--s)/tan(30deg));
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(20) {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(20) {
 	animation-name: jitter2;
 	animation-duration: 232s;
 }
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(21),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(21) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(21),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(21) .extension-followers-variables-value-container-bg {
 	--s: 65px;
 	--c1: #dadee1;
 	--c2: #4a99b4;
@@ -803,8 +826,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 }
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(22),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(22) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(22),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(22) .extension-followers-variables-value-container-bg {
 	--s: 100px;
 	--c1: #1bb0ce;
 	--c2: #dad6ca;
@@ -824,14 +847,14 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 	background-position: 0 0, var(--s) var(--s);
 	background-size: calc(2*var(--s)) calc(2*var(--s));
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(22) {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(22) {
 	animation-name: jitter1;
 	animation-duration: 202s;
 }
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(23),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(23) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(23),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(23) .extension-followers-variables-value-container-bg {
 	--s: 76px;
 	--c1: #f6d86b;
 	--c2: #f10c49;
@@ -844,8 +867,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 }
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(24),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(24) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(24),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(24) .extension-followers-variables-value-container-bg {
 	--s: 30px;
 	--c1: #5e9fa3;
 	--c2: #b05574;
@@ -861,14 +884,14 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 		repeating-linear-gradient(-30deg, var(--c3) 0 calc(100%/6), var(--c4) 0 50%);
 	background-size: calc(6*.866*var(--s)) calc(3*var(--s))
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(24) {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(24) {
 	animation-name: jitter2;
 	animation-duration: 173s;
 }
 
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(25),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(25) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(25),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(25) .extension-followers-variables-value-container-bg {
 	--s: 70px;
 	--c1: #f67280;
 	--c2: #355c7d;
@@ -880,8 +903,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 	background-size: var(--s) var(--s);
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(26),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(26) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(26),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(26) .extension-followers-variables-value-container-bg {
 	--s: 200px;
 	--fun1c1: #1d1d1d;
 	--fun1c2: #4e4f51;
@@ -892,13 +915,13 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 		repeating-conic-gradient(from 30deg, var(--fun1c1) 0 60deg, var(--fun1c2) 0 120deg, var(--fun1c3) 0 50%);
 	background-size: var(--s) calc(var(--s)*tan(30deg));
 }
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(26) {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(26) {
 	animation-name: jitter1;
 	animation-duration: 133s;
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(27),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(27) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(27),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(27) .extension-followers-variables-value-container-bg {
 	--s: 150px;
 	--c1: #f7d2a1;
 	--c2: #05057e;
@@ -915,8 +938,8 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 	background-size: var(--s) var(--s);
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(28),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(28) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(28),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(28) .extension-followers-variables-value-container-bg {
 	--s: 100px;
 	--fun2c1: #9ba32e;
 	--fun2c2: #29ab87;
@@ -929,13 +952,13 @@ body.developer #extension-followers-variables-content.extension-followers-variab
 	background-size: var(--s) var(--s);
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(28) {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(28) {
 	animation-name: jitter1;
 	animation-duration: 250s;
 }
 
-#extension-followers-variables-content.extension-followers-variables-screensaver #extension-followers-variables-list>.extension-followers-item:nth-child(29),
-#extension-followers-variables-content:not(.extension-followers-variables-screensaver) #extension-followers-variables-list>.extension-followers-item:nth-child(29) .extension-followers-variables-value-container {
+body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(29),
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(29) .extension-followers-variables-value-container-bg {
 	--s: 30px;
 	--c1: #e5fcc2;
 	--c2: #45ada8;
