@@ -71,7 +71,7 @@
     }
   },
   "short_name": "Followers",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "web_accessible_resources": [
     "css/*.css",
     "images/*.svg",
