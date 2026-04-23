@@ -142,6 +142,10 @@ class FollowersDevice(Device):
                                     description,
                                     self.adapter.api_handler.persistent_data['variables'][unique_id]['value'])
                 
+                if self.DEBUG:
+                    print("device: calling self.adapter.handle_device_added")
+                self.adapter.handle_device_added(self)
+                
             except Exception as ex:
                 if self.DEBUG:
                     print("device: caught error in regenerate_properties " + str(ex))

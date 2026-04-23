@@ -442,6 +442,7 @@ body#path-extensions-followers.screensaver  #extension-followers-variables-list>
 	margin-top:0;
 	border-radius:0;
 	flex-grow:1;
+	transition: background-size 2s ease-in-out;
 }
 
 body#path-extensions-followers.screensaver #extension-followers-variables-list > .extension-followers-item > :not(.extension-followers-item-sentence),

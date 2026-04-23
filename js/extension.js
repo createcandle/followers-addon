@@ -390,6 +390,9 @@
 						//	this.regenerate_variables();
 						//}
 						this.regenerate_variables();
+						if(Object.keys(this.variables).length == 0){
+							this.view.querySelector('#extension-followers-variables-tutorial').classList.remove('#extension-followers-hidden');
+						}
 					}
 
 					if (typeof body.greyscale == 'boolean') {
