@@ -104,14 +104,7 @@
         </div>
 
 
-        <br>
-        <br>
-
-        <div id="extension-followers-debug-warning" style="display: none;">
-            <h2>Debugging is enabled</h2>
-            <p>This addon is currently set to save detailed information about its operation in the internal logs. This may impact your privacy, as this also means that insights into your behaviour might be stored in those logs.</p>
-            <p>You can disable debugging mode by going to <span style="font-style:italic">Settings</span>, then <span style="font-style:italic">Addons</span>, and then clicking on the <span style="font-style:italic">Settings</span> button for the <span style="font-style:italic">Followers</span> addon. There you can uncheck the debugging option and click <span style="font-style:italic">Apply</span>.</p>
-        </div>
+        
 
         <br>
         <br>
@@ -138,12 +131,28 @@
 	        <p>Please come back in 20 seconds.</p>
 	    </div>
 
-        <!--
-        <p>〰 ϟ ↗</p>
-        -->
-		
-
 		<div id="extension-followers-variables-list"></div>
+
+        <div id="extension-followers-variables-tutorial">
+            <div class="extension-followers-flex-wrap-when-narrow">
+                <div>
+                    <img loading="lazy" id="extension-followers-variables-tutorial-illustration" src="/extensions/followers/images/variables_illustration.svg" alt="Variables can go up.. or down">
+                </div>
+                <div>
+                    <h2>Variables</h2>
+                    <p>Variables are values that can increase or decrease depending on certain triggers.</p>
+                    <p>A simple use would be to <strong>count how often something happens</strong>. For example, you could count how often a device has been switched on. If you set this variable back to zero every seven days, then you could keep track of how often something happens each week.</p>
+                    <p>A variable doesn't only have to go up. You could create one that increases whenever you press the "up" button on a remote control, but <strong>decreases</strong> whenever you press its "down" button. It could go back to zero when you press "left", and go to 100 when you press "right".</p>
+                    <p>Once you have a variable you can then use it to influence other things, such as the brightness of a light bulb, by creating a <strong id="extension-followers-variables-tutorial-followers-button">Follower</strong> based on that variable.</p>
+                    
+                </div>
+            </div>
+            <p style="text-align:center">Click on the <img src="/images/add.svg" alt="(+)" class="extension-followers-tiny-plus-button"> button in the bottom right corner if you want to create a variable.</p>
+        </div>
+
+        <div id="extension-followers-variables-play-button-container">
+            <button id="extension-followers-variables-play-button" class="icon-button" aria-label="Start"></button>
+        </div>
 
 	    <div id="extension-followers-variables-original-item" class="extension-followers-item">
 
@@ -182,7 +191,7 @@
 
                 <div class="extension-followers-variables-item-trigger-buttons-container extension-followers-item-sentence-part">
                     <button class="text-button extension-followers-variables-add-property-button"
-                        data-extension-followers-variables-trigger="property">+ Property</button>
+                        data-extension-followers-variables-trigger="property"><strong>+</strong>&nbsp; Property</button>
                     <!--
                     <button class="text-button extension-followers-variables-add-action-button"
                         data-extension-followers-variables-trigger="action">+ Action</button>
@@ -193,7 +202,7 @@
                         data-extension-followers-variables-trigger="time">+ Time</button>
                     -->
                     <button class="text-button extension-followers-variables-add-time-button"
-                        data-extension-followers-variables-trigger="time">+ Time</button>
+                        data-extension-followers-variables-trigger="time"><strong>+</strong>&nbsp; Time</button>
                     <!--
                     <button class="text-button extension-followers-variables-add-reset-button"
                         data-extension-followers-variables-trigger="reset">+ Reset</button>
@@ -257,10 +266,17 @@
 
     <div id="extension-followers-variables-play-overlay"></div>
 
-    <div id="extension-followers-variables-play-button-container">
-        <button id="extension-followers-variables-play-button" class="icon-button" aria-label="Start"></button>
-    </div>
+    
 
     <button id="extension-followers-variables-add-button" class="icon-button" aria-label="New"></button>
     
+</div>
+
+<br>
+<br>
+
+<div id="extension-followers-debug-warning" style="display: none;">
+    <h2>Debugging is enabled</h2>
+    <p>This addon is currently set to save detailed information about its operation in the internal logs. This may impact your privacy, as this also means that insights into your behaviour might be stored in those logs.</p>
+    <p>You can disable debugging mode by going to <span style="font-style:italic">Settings</span>, then <span style="font-style:italic">Addons</span>, and then clicking on the <span style="font-style:italic">Settings</span> button for the <span style="font-style:italic">Followers</span> addon. There you can uncheck the debugging option and click <span style="font-style:italic">Apply</span>.</p>
 </div>

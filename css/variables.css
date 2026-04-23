@@ -17,7 +17,42 @@ body.kiosk #extension-followers-variables-content-container{
 }
 
 
+/*  tutorial  */
 
+#extension-followers-variables-tutorial{
+	max-width:80rem;
+	margin:6rem auto;
+}
+
+#extension-followers-variables-tutorial > div{
+	background-color:rgba(255,255,255,.1);
+	padding:4rem 2rem;
+	border-radius:1rem;
+}
+
+#extension-followers-variables-tutorial p{
+	line-height: 160%;
+}
+
+#extension-followers-variables-tutorial > div p:first-of-type{
+	font-size:125%;
+	line-height: 180%;
+	margin-bottom:2rem;
+}
+
+#extension-followers-variables-tutorial-illustration{
+	min-width:200px;
+	margin:2rem;
+}
+
+.extension-followers-tiny-plus-button {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+
+#extension-followers-variables-list:empty ~ #extension-followers-variables-play-button,
+#extension-followers-variables-list:not(:empty) ~ #extension-followers-variables-tutorial,
 #extension-followers-variables-original-change-selectors,
 #extension-followers-view select.extension-followers-increases:has(option[value="set_it_to"]:checked)~select.extension-followers-by,
 #extension-followers-view select.extension-followers-increases:has(option[value="set_it_to"]:checked)~.extension-followers-variables-by-text,
@@ -288,6 +323,7 @@ body#path-extensions-followers.screensaver .extension-followers-name{
 
 #extension-followers-view .extension-followers-variables-item-trigger-buttons-container > button{
 	padding:1rem;
+	margin-left:1rem;
 }
 
 

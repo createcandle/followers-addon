@@ -71,6 +71,10 @@ body:not(.developer) .extension-followers-show-if-developer{
     display:none!important;
 }
 
+.extension-followers-flex-wrap-when-narrow{
+	display:flex;
+}
+
 
 /*  DELETE  */
 
@@ -358,7 +362,7 @@ body:not(.developer) .extension-followers-show-if-developer{
 
 #extension-followers-list-explanation {
     display: flex;
-    height: calc(100vh - 20rem);
+    min-height: calc(100vh - 20rem);
     width: 100%;
     align-items: center;
     justify-content: center;
@@ -386,6 +390,7 @@ body:not(.developer) .extension-followers-show-if-developer{
     border-radius: 0.5rem;
 }
 
+
 @media screen and (max-width: 800px) {
     .extension-followers-item-sentence {
         border: 0;
@@ -395,6 +400,10 @@ body:not(.developer) .extension-followers-show-if-developer{
     .extension-followers-item-left {
         display: flex;
         align-items: center;
+    }
+
+    .extension-followers-flex-wrap-when-narrow{
+	    flex-wrap:wrap;
     }
 }
 

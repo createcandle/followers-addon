@@ -186,6 +186,10 @@
     	backButton.classList.add('hidden');
   	}
 	*/
+	
+	removeHash() { 
+	    history.pushState("", document.title, window.location.pathname + window.location.search);
+	}
 
 	random_letter() {
 		const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -262,15 +266,15 @@
 			}
 
 			this.view.querySelector('#extension-followers-title').addEventListener('click', () => {
-				this.view.classList.add('extensions-followers-view-show-variables');
-				this.at_variables = true;
-				this.regenerate_variables();
+				this.show_variables();
 			});
 
 			this.view.querySelector('#extension-followers-variables-title').addEventListener('click', () => {
-				this.view.classList.remove('extensions-followers-view-show-variables');
-				this.at_variables = false;
-				this.regenerate_items();
+				this.show_followers();
+			});
+
+			this.view.querySelector('#extension-followers-variables-tutorial-followers-button').addEventListener('click', () => {
+				this.show_followers();
 			});
 
 			// Pre populating the original item that will be clones to create new ones
@@ -571,16 +575,6 @@
 			});
 			
 
-
-
-
-
-
-
-
-
-
-
 			
 			//
 			//  SET PROPERTIES FOR SELECTED VARIABLES
@@ -607,6 +601,20 @@
 		
 		}, 100);
 
+	}
+
+	show_followers(){
+		this.view.classList.remove('extensions-followers-view-show-variables');
+		this.at_variables = false;
+		this.removeHash();
+		this.regenerate_items();
+	}
+
+	show_variables(){
+		this.view.classList.add('extensions-followers-view-show-variables');
+		this.at_variables = true;
+		window.location.hash = '#variables';
+		this.regenerate_variables();
 	}
 
 
@@ -1342,7 +1350,7 @@
 
 					const passed_el = document.createElement('span');
 					passed_el.classList.add('extension-followers-sentence-passed');
-					passed_el.textContent = ' have passed ';
+					passed_el.textContent = ' passed ';
 					time_select_container_el.appendChild(passed_el);
 
 					property_trigger_item_el.appendChild(time_select_container_el);
