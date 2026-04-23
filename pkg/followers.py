@@ -109,6 +109,7 @@ class FollowersAPIHandler(APIHandler):
         self.greyscale = False;
         self.screensaver_scroll = True
 
+
         # LOAD CONFIG
         try:
             self.add_from_config()
@@ -388,34 +389,63 @@ class FollowersAPIHandler(APIHandler):
                 previous_timestamp = current_timestamp
                 #if self.DEBUG:
                 #    print(" ")
+                #    print("TICK")
                 #    print("previous_timestamp: " + str(previous_timestamp))
-
+                #    print("self.got_good_things_list: ", self.got_good_things_list)
+                #    print("self.initial_connection_made: ", self.initial_connection_made)
                 try:
                     if self.got_good_things_list:
 
                         if self.initial_connection_made == False:
-                            if self.DEBUG:
-                                print("self.initial_connection_made: ", self.initial_connection_made)
+                            #if self.DEBUG:
+                            #    print("self.initial_connection_made: ", self.initial_connection_made)
                             if 'token' in self.persistent_data and len(str(self.persistent_data['token'])) > 10:
                                 self.initial_connection_made = True
+                                if self.DEBUG:
+                                    print("clock: doing connect_to_all_things")
                                 self.connect_to_all_things()
+                                if self.DEBUG:
+                                    print("clock: connect_to_all_things is done")
                                 self.ready = True
 
-
-
-
                     if self.should_save:
+                        if self.DEBUG:
+                            print("clock: should_save is True")
                         self.should_save = False
                         self.save_persistent_data()
+
                     
-                    
+                    for index, unique_id in enumerate(self.persistent_data['variables']):
+                        if 'enabled' in self.persistent_data['variables'][unique_id] and isinstance(self.persistent_data['variables'][unique_id]['enabled'],bool) and self.persistent_data['variables'][unique_id]['enabled'] == True:
+                            #if self.DEBUG:
+                            #    print("clock: enabled variable: ", unique_id)
+                            for index2, trigger_id in enumerate(self.persistent_data['variables'][unique_id]['triggers']):
+                                if 'type' in self.persistent_data['variables'][unique_id]['triggers'][trigger_id] and self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['type'] == 'time':
+                                    #print("clock: checking time trigger")
+                                    if 'time_delta' in self.persistent_data['variables'][unique_id]['triggers'][trigger_id] and 'time_delta_multiplier' in self.persistent_data['variables'][unique_id]['triggers'][trigger_id] and isinstance(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['time_delta'],str) and isinstance(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['time_delta_multiplier'],str):
+                                        try:
+                                            multiplied_delta = int(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['time_delta']) * int(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['time_delta_multiplier'])
+                                            #print("clock: multiplied_delta: ", multiplied_delta)
+                                            if multiplied_delta > 0:
+                                                if current_timestamp % multiplied_delta == 0:
+                                                    if self.DEBUG:
+                                                        print("clock: NOW! performing time trigger for unique_id: ", unique_id)
+                                                    self.update_variable(unique_id,trigger_id)
+                                        except Exception as ex:
+                                            if self.DEBUG:
+                                                print("clock: caught error calculating time trigger time_delta: ", ex)
+
 
                 except Exception as ex:
                     if self.DEBUG:
                         print("caught general clock error: " + str(ex))
                         print("Error on line {}".format(sys.exc_info()[-1].tb_lineno))
+        
+        #if self.DEBUG:
+        #    print("Clock: beyond while loop")
 
-
+     
+                            
 
 
 
@@ -517,7 +547,7 @@ class FollowersAPIHandler(APIHandler):
             #print("in connect_to_all_things.   self.persistent_data['items']: " + str(self.persistent_data['items']))
             for index, item in enumerate(self.persistent_data['items']):
 
-                if str(item['thing1']) not in self.websockets.keys():
+                if 'thing1' in item and str(item['thing1']) not in self.websockets.keys():
                     if self.DEBUG:
                         print("calling start_websocket for Followers thing: ", item['thing1'])
                     self.start_websocket(item['thing1'])
@@ -525,12 +555,13 @@ class FollowersAPIHandler(APIHandler):
                 #    print("thing already in self.websockets: ", item['thing1'])
 
             for index, unique_id in enumerate(self.persistent_data['variables']):
-                for index, trigger_id in enumerate(self.persistent_data['variables'][unique_id]['triggers']):
-                    thing_id = str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['thing1'])
-                    if len(thing_id) > 1 and thing_id not in self.websockets.keys():
-                        if self.DEBUG:
-                            print("calling start_websocket for Variables trigger thing_id: ", thing_id)
-                        self.start_websocket(thing_id)
+                for index2, trigger_id in enumerate(self.persistent_data['variables'][unique_id]['triggers']):
+                    if 'thing1' in self.persistent_data['variables'][unique_id]['triggers'][trigger_id] and isinstance(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['thing1'],str):
+                        thing_id = str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['thing1'])
+                        if len(thing_id) > 1 and thing_id not in self.websockets.keys():
+                            if self.DEBUG:
+                                print("calling start_websocket for Variables trigger thing_id: ", thing_id)
+                            self.start_websocket(thing_id)
 
 
         except Exception as ex:
@@ -659,28 +690,28 @@ class FollowersAPIHandler(APIHandler):
 
             message_property = None
             if 'data' in message.keys() and 'enabled' in self.persistent_data['variables'][unique_id].keys():
-                print("got some data")
                 #print("message['data'].keys(), len(message['data'].keys(): ", len(message['data'].keys()), message['data'].keys() )
                 if len(message['data'].keys()):
-                    print("data with some keys")
                     message_property = str(list(message['data'].keys())[0] )
-                    print("message_property: ", message_property)
+                    if self.DEBUG:
+                        print("message_property: ", message_property)
 
                     if self.persistent_data['variables'][unique_id]['enabled'] == True:
-                        print("variable is enabled: ", unique_id)
                         for index, trigger_id in enumerate(self.persistent_data['variables'][unique_id]['triggers']):
-                            print("checking trigger_id: ", trigger_id)
                             try:
-                                print("THING ID MATCH? ", str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['thing1']), " =?= ", str(message['id']))
-                                if str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['thing1']) == str(message['id']):
-                                    if 'data' in message.keys() and str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['property1']) == str(message_property):
-                                        if self.DEBUG:
-                                            print("handle_ws_update: got relevant property for variable.  \n- unique_id,trigger_id: ", unique_id, trigger_id, "\n- thing-property: ", str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['thing1']), str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['property1']), "\n- message: ", message)
-                                        self.update_variable(unique_id, trigger_id, message)
+                                if 'thing1' in self.persistent_data['variables'][unique_id]['triggers'][trigger_id] and isinstance(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['thing1'],str):
+                                    #if self.DEBUG:
+                                    #    print("TRIGGER THING ID MATCH? ", str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['thing1']), " =?= ", str(message['id']))
+                                    if str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['thing1']) == str(message['id']):
+                                        if 'data' in message.keys() and str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['property1']) == str(message_property):
+                                            if self.DEBUG:
+                                                print("handle_ws_update: got relevant property for variable.  \n- unique_id,trigger_id: ", unique_id, trigger_id, "\n- thing-property: ", str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['thing1']), str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['property1']), "\n- message: ", message)
+                                            self.update_variable(unique_id, trigger_id, message)
 
 
                             except Exception as ex:
-                                print("caught error checking variables trigger for match with incoming message: ", ex)
+                                if self.DEBUG:
+                                    print("\ncaught error checking variables trigger for match with incoming message: ", ex)
                             
 
 
@@ -785,7 +816,7 @@ class FollowersAPIHandler(APIHandler):
 
 
     # , str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['thing1']), str(self.persistent_data['variables'][unique_id]['triggers'][trigger_id]['property1']), message['data'][str(message_property)]
-    def update_variable(self, unique_id, trigger_id, message):   #thing_id, property_id, value):
+    def update_variable(self, unique_id, trigger_id, message={}):   #thing_id, property_id, value):
         if self.DEBUG:
             #print("in update_variable.  unique_id, trigger_id, thing_id, property_id, value: ", unique_id, trigger_id, thing_id, property_id, value)
             print("in update_variable.  unique_id, trigger_id, message: ", unique_id, trigger_id, message)
@@ -797,23 +828,30 @@ class FollowersAPIHandler(APIHandler):
                 print("update_variable: MESSAGE: \n", json.dumps(message,indent=4))
                 print("update_variable: FULL TRIGGER: \n", json.dumps(trigger,indent=4))
 
-            property_id = trigger['property1']
             if not 'value' in self.persistent_data['variables'][unique_id]:
                 self.persistent_data['variables'][unique_id]['value'] = float(self.persistent_data['variables'][unique_id]['limit1'])
+
             initial_value = float(self.persistent_data['variables'][unique_id]['value'])
-            if 'data' in message and property_id in message['data']:
-                received_value = message['data'][property_id]
-            else:
-                if self.DEBUG:
-                    print("error, failed to get value from received message")
-                return
-            
-            if self.DEBUG:
-                print("update_variable: received_value: ", received_value)
-        
-            if trigger['type'] == 'property':
+            received_value = initial_value
+
+            value_change = 0
+            if 'amount' in trigger:
                 value_change = float(trigger['amount'])
+
+
+            if trigger['type'] == 'property':
                 
+                property_id = trigger['property1']
+                if 'data' in message and property_id in message['data']:
+                    received_value = message['data'][property_id]
+                else:
+                    if self.DEBUG:
+                        print("error, failed to get value from received message")
+                    return
+            
+                if self.DEBUG:
+                    print("update_variable: received_value: ", received_value)
+
                 # Boolean filter
                 if trigger['property1_type'] == 'boolean':
                     if trigger['boolean_change'] == 'switches_on' and bool(received_value) == False:
@@ -854,111 +892,128 @@ class FollowersAPIHandler(APIHandler):
                             print("update_variable: skipping because string was already this value, so 'becomes' does not apply")
                         return
 
+            # No filters for time triggers
+
+
+
+            if self.DEBUG:
                 print("\n\n\nvalue_change: ", value_change, "\n\n\n")
-                
+            
                 print("self.adapter.thing: ", self.adapter.thing)
                 print("self.adapter.thing.properties: ", self.adapter.thing.properties)
 
-                if self.adapter and self.adapter.thing and unique_id in self.adapter.thing.properties:
+            if self.adapter and self.adapter.thing and unique_id in self.adapter.thing.properties:
+                if self.DEBUG:
                     print("OK, unique_id is in properties")
-                    var_type = self.persistent_data['variables'][unique_id]['type']
-                    going_up = bool(self.persistent_data['variables'][unique_id]['going_up'])
-                    print("var_type: ", var_type)
+                var_type = self.persistent_data['variables'][unique_id]['type']
+                going_up = bool(self.persistent_data['variables'][unique_id]['going_up'])
+                if self.DEBUG:
+                    print(" -+ var_type: ", var_type)
+                    print(" -+ trigger['increases']: ", trigger['increases'])
 
+                # range
+                # loop
+                # bounce
+                # stay_above
+                # stay_below
+                # start_at
 
-                    # range
-                    # loop
-                    # bounce
-                    # stay_above
-                    # stay_below
-                    # start_at
+                try:
 
-                    try:
-
-                        # SET IT TO
-                        if trigger['increases'] == 'set_it_to':
-                            self.adapter.thing.properties[unique_id].update(value_change)
-
-
-                        # BOUNCE
-                        elif var_type == 'bounce':
-                            if self.DEBUG:
-                                print("handling bounce variable.  going_up: ", going_up)
-                            if going_up == True:
-                                theoretical_bounce_value = float(initial_value) + float(value_change)
-                                if theoretical_bounce_value > float(item['limit2']):
-                                    self.adapter.thing.properties[unique_id].update(float(item['limit2']))
-                                    self.persistent_data['variables'][unique_id]['going_up'] = not going_up
-                                    #overshoot = float(trigger['limit2']) - theoretical_bounce_value
-                                else:
-                                    self.adapter.thing.properties[unique_id].update(theoretical_bounce_value)
-                            else:
-                                theoretical_bounce_value = float(initial_value) - float(value_change)
-                                if theoretical_bounce_value < float(item['limit1']):
-                                    self.adapter.thing.properties[unique_id].update(float(item['limit1']))
-                                    self.persistent_data['variables'][unique_id]['going_up'] = not going_up
-                                else:
-                                    self.adapter.thing.properties[unique_id].update(theoretical_bounce_value)
-
-
-                        # INCREASE
-                        elif trigger['increases'] == 'increase':
-                            theoretical_additive_value = float(initial_value) + float(value_change)
-                            if self.DEBUG:
-                                print("update_variable: theoretical_additive_value: ", type(theoretical_additive_value), theoretical_additive_value)
-                            if var_type == 'start_at' or var_type == 'stay_above' or theoretical_additive_value < float(item['limit2']):
-                                if self.DEBUG:
-                                    print("setting theoretical_additive_value directly: ", type(theoretical_additive_value), theoretical_additive_value)
-                                self.adapter.thing.properties[unique_id].update(theoretical_additive_value)
-                            else:
-                                overshoot = theoretical_additive_value - float(item['limit2'])
-                                if self.DEBUG:
-                                    print("increase overshoot: ", type(overshoot), overshoot)
-                                if var_type == 'range' or var_type == 'stay_below':
-                                    self.adapter.thing.properties[unique_id].update(float(item['limit2']))
-                                elif var_type == 'loop':
-                                    if overshoot < (float(item['limit2']) - float(item['limit1'])):
-                                        self.adapter.thing.properties[unique_id].update(float(item['limit1']) + overshoot)
-                                    else:
-                                        self.adapter.thing.properties[unique_id].update(float(item['limit1']))
-                                else:
-                                    if self.DEBUG:
-                                        print("var_type fell through while handling 'increase': ", var_type)
-
-
-                        # DECREASE
-                        elif trigger['increases'] == 'decrease':
-                            theoretical_subtractive_value = float(initial_value) - float(value_change)
-                            if self.DEBUG:
-                                print("update_variable:theoretical_subtractive_value: ", type(theoretical_subtractive_value), theoretical_subtractive_value)
-                            if var_type == 'start_at' or var_type == 'stay_below' or theoretical_subtractive_value > float(item['limit1']):
-                                self.adapter.thing.properties[unique_id].update(theoretical_subtractive_value)
-                            else:
-                                overshoot = float(item['limit1']) - theoretical_subtractive_value
-                                if self.DEBUG:
-                                    print("decrease overshoot: ", type(overshoot), overshoot)
-                                if var_type == 'range' or var_type == 'stay_above':
-                                    self.adapter.thing.properties[unique_id].update(float(item['limit1']))
-                                elif var_type == 'loop':
-                                    if overshoot < (float(item['limit2']) - float(item['limit1'])):
-                                        self.adapter.thing.properties[unique_id].update(float(item['limit2']) - overshoot)
-                                    else:
-                                        self.adapter.thing.properties[unique_id].update(float(item['limit2']))
-                                else:
-                                    if self.DEBUG:
-                                        print("var_type fell through while handling 'decrease': ", var_type)
-
-
-                        else:
-                            if self.DEBUG:
-                                print("ERROR: update_variable: setting new value fell through")
-
-
-                    except Exception as ex:
+                    # SET IT TO
+                    if trigger['increases'] == 'set_it_to':
                         if self.DEBUG:
-                            print("caught error setting value of Variables property: ", ex)
+                            print("handling set_it_to")
+                        self.adapter.thing.properties[unique_id].update(value_change)
 
-                    
+
+                    # BOUNCE
+                    elif var_type == 'bounce':
+                        if self.DEBUG:
+                            print("handling bounce variable.  going_up: ", going_up)
+                        if going_up == True:
+                            theoretical_bounce_value = float(initial_value) + float(value_change)
+                            if self.DEBUG:
+                                print("bounce: going up:  theoretical_bounce_value: ", theoretical_bounce_value)
+                            if theoretical_bounce_value > float(item['limit2']):
+                                self.adapter.thing.properties[unique_id].update(float(item['limit2']))
+                                self.persistent_data['variables'][unique_id]['going_up'] = not going_up
+                                #overshoot = float(trigger['limit2']) - theoretical_bounce_value
+                            else:
+                                self.adapter.thing.properties[unique_id].update(theoretical_bounce_value)
+                        else:
+                            theoretical_bounce_value = float(initial_value) - float(value_change)
+                            if self.DEBUG:
+                                print("bounce: going down:  theoretical_bounce_value: ", theoretical_bounce_value)
+                            if theoretical_bounce_value < float(item['limit1']):
+                                self.adapter.thing.properties[unique_id].update(float(item['limit1']))
+                                self.persistent_data['variables'][unique_id]['going_up'] = not going_up
+                            else:
+                                self.adapter.thing.properties[unique_id].update(theoretical_bounce_value)
+
+
+                    # INCREASE
+                    elif trigger['increases'] == 'increase':
+                        theoretical_additive_value = float(initial_value) + float(value_change)
+                        if self.DEBUG:
+                            print("update_variable: theoretical_additive_value: ", type(theoretical_additive_value), theoretical_additive_value)
+                        if var_type == 'start_at' or var_type == 'stay_above' or theoretical_additive_value < float(item['limit2']):
+                            if self.DEBUG:
+                                print("setting theoretical_additive_value directly: ", type(theoretical_additive_value), theoretical_additive_value)
+                            self.adapter.thing.properties[unique_id].update(theoretical_additive_value)
+                        else:
+                            overshoot = theoretical_additive_value - float(item['limit2'])
+                            if self.DEBUG:
+                                print("increase overshoot: ", type(overshoot), overshoot)
+                            if var_type == 'range' or var_type == 'stay_below':
+                                self.adapter.thing.properties[unique_id].update(float(item['limit2']))
+                            elif var_type == 'loop':
+                                if overshoot == 0:
+                                    self.adapter.thing.properties[unique_id].update(float(item['limit2']))
+                                elif overshoot < (float(item['limit2']) - float(item['limit1'])):
+                                    self.adapter.thing.properties[unique_id].update(float(item['limit1']) + overshoot)
+                                else:
+                                    self.adapter.thing.properties[unique_id].update(float(item['limit1']))
+                            else:
+                                if self.DEBUG:
+                                    print("var_type fell through while handling 'increase': ", var_type)
+
+
+                    # DECREASE
+                    elif trigger['increases'] == 'decrease':
+                        theoretical_subtractive_value = float(initial_value) - float(value_change)
+                        if self.DEBUG:
+                            print("decrease: theoretical_subtractive_value: ", type(theoretical_subtractive_value), theoretical_subtractive_value)
+                        if var_type == 'start_at' or var_type == 'stay_below' or theoretical_subtractive_value > float(item['limit1']):
+                            self.adapter.thing.properties[unique_id].update(theoretical_subtractive_value)
+                        else:
+                            overshoot = float(item['limit1']) - theoretical_subtractive_value
+                            if self.DEBUG:
+                                print("decrease overshoot: ", type(overshoot), overshoot)
+                            if var_type == 'range' or var_type == 'stay_above':
+                                self.adapter.thing.properties[unique_id].update(float(item['limit1']))
+                            elif var_type == 'loop':
+                                if overshoot == 0:
+                                    self.adapter.thing.properties[unique_id].update(float(item['limit1']))
+                                elif overshoot < (float(item['limit2']) - float(item['limit1'])):
+                                    self.adapter.thing.properties[unique_id].update(float(item['limit2']) - overshoot)
+                                else:
+                                    self.adapter.thing.properties[unique_id].update(float(item['limit2']))
+                            else:
+                                if self.DEBUG:
+                                    print("var_type fell through while handling 'decrease': ", var_type)
+
+
+                    else:
+                        if self.DEBUG:
+                            print("ERROR: update_variable: setting new value fell through")
+
+
+                except Exception as ex:
+                    if self.DEBUG:
+                        print("caught error setting value of Variables property: ", ex)
+
+                
 
 
         except Exception as ex:
@@ -967,7 +1022,6 @@ class FollowersAPIHandler(APIHandler):
 
         
 
- 
 
 
 
@@ -989,7 +1043,7 @@ class FollowersAPIHandler(APIHandler):
             if request.method != 'POST':
                 return APIResponse(status=404)
 
-            if request.path == '/init' or request.path == '/update_items':
+            if request.path == '/init' or request.path == '/update_items' or request.path == '/regenerate_thing':
 
                 try:
 
@@ -1111,6 +1165,29 @@ class FollowersAPIHandler(APIHandler):
                                 content=json.dumps({"state":"Error updating items: " + str(ex)}),
                             )
 
+
+                    elif request.path == '/regenerate_thing':
+                        if self.DEBUG:
+                            print("/regenerate_thing called")
+                        state = False
+                        try:
+                            if self.adapter and self.adapter.thing:
+                                self.adapter.thing.regenerate_properties()
+                                state = True
+                            else:
+                                if self.DEBUG:
+                                    print("\nERROR, no self.adapter.thing?")
+                                
+                        except Exception as ex:
+                            if self.DEBUG:
+                                print("\ncaught ERROR requesting regeneration of candle-variables device properties: ", ex)
+                        
+                        return APIResponse(
+                            status=200,
+                            content_type='application/json',
+                            content=json.dumps({'state': state}),
+                        )
+                    
                     else:
                         return APIResponse(status=404)
 

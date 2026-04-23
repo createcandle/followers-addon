@@ -39,7 +39,7 @@
 
 		this.item_elements = ['limit1', 'limit2', 'thing1', 'property1', 'limit3', 'limit4', 'thing2', 'property2'];
 		this.variables_elements = ['name','type','limit1','limit2'];
-		this.variables_triggers_elements = ['thing1', 'property1', 'boolean_change', 'number_change', 'string_change', 'change_value', 'change_enum_value', 'increases','by','amount'];
+		this.variables_triggers_elements = ['thing1', 'property1', 'boolean_change', 'number_change', 'string_change', 'change_value', 'change_enum_value', 'increases','by','amount', 'time_delta', 'time_delta_multiplier'];
 		
 		this.all_things;
 		this.items_list = [];
@@ -134,28 +134,35 @@
 
 
 		if (typeof this.subscribeToThingProperties == 'function'){
+			console.warn("\n\n\nthis.subscribeToThingProperties is available");
 			API.getThings().then((things) => {
 				//console.log('API: things: ', things);
 				for(const index in things){
-					if(typeof things[index]['href'] == '/things/candle-variables'){
+					//console.log("things[index]['href']: ", things[index]['href']);
+					if(things[index]['href'] == '/things/candle-variables'){
+						console.log("/things/candle-variables exists. Subscribing.")
 						// Candle-variables thing exists, so let's subscribe to updates about its properties
 						this.subscribeToThingProperties('candle-variables', (message) => {
-							if(this.debug){
-								console.log("followers debug: variables: subscribeToThingProperties: received message: ", message);
-							}
+							//if(this.debug){
+							console.warn("followers debug: variables: subscribeToThingProperties: received message: ", message);
+							//}
 							for (let [unique_id, details] of Object.entries(this.variables)) {
+								console.log("looking over variables items:  unique_id, detail: ", unique_id, details);
 								if(typeof message[unique_id] != 'undefined'){
-									if(this.debug){
-										console.log("followers debug: found the variable that was updated.  unique_id and new value: ", unique_id, message[unique_id]);
-									}
+									//if(this.debug){
+									console.warn("followers debug: found the variable that was updated.  unique_id and new value: ", unique_id, message[unique_id]);
+									//}
 									this.variables[unique_id]['value'] = message[unique_id];
 									this.update_variables_screensaver_item(unique_id);
 									const variable_item_value_el = this.view.querySelector('#extension-followers-variables-list > .extension-followers-item[data-extension-followers-variables-item-unique-id="' + unique_id + '"] .extension-followers-value');
 									if(variable_item_value_el){
+										console.log("OK, found variable_item_value_el")
 										variable_item_value_el.value = message[unique_id];
 									}
+									else{
+										console.warn("cound not find variable_item_value_el");
+									}
 								}
-								break
 							}
 							
 						});
@@ -166,7 +173,9 @@
 			});
 			
 		}
-
+		else{
+			console.warn("this.subscribeToThingProperties is not available");
+		}
 	}
 
 	/*
@@ -526,7 +535,7 @@
 					// Check if this item is enabled
 					new_values['enabled'] = item.querySelector('.extension-followers-enabled').checked;
 
-					new_values['speed'] = parseInt(item.querySelector('.extension-followers-speed').value);
+					//new_values['speed'] = parseInt(item.querySelector('.extension-followers-speed').value);
 
 					updated_values.push(new_values);
 
@@ -791,7 +800,7 @@
 					}
 					else {
 						if (this.debug) {
-							console.error("followers debug: variables: could not find trigger value el: ", this.variables_triggers_elements[value_index]);
+							console.log("followers debug: variables: could not find trigger value el: ", this.variables_triggers_elements[value_index]);
 						}
 					}
 				}
@@ -825,6 +834,14 @@
 				}
 				else {
 					trigger_els[te].setAttribute('data-extension-followers-variables-trigger-property1-type', 'action');
+				}
+
+				// property or time trigger
+				if (typeof this.variables[unique_id]['triggers'][trigger_id]['type'] == 'string') {
+					trigger_els[te].setAttribute('data-extension-followers-variables-trigger-type', this.variables[unique_id]['triggers'][trigger_id]['type']);
+				}
+				else{
+					trigger_els[te].setAttribute('data-extension-followers-variables-trigger-type', 'unknown');
 				}
 
 
@@ -995,6 +1012,7 @@
 
 
 				// Set speed
+				/*
 				if(typeof items[item].speed != 'undefined'){
 					//console.log("setting speed:", 'extension-followers-speed' + this.item_number, items[item].speed);
 					clone.querySelector('.extension-followers-speed').id = 'extension-followers-speed' + this.item_number;
@@ -1003,6 +1021,7 @@
 				else{
 					//console.log("speed was not defined");
 				}
+				*/
 
 
 
@@ -1165,11 +1184,17 @@
 					return
 				}
 
+				if (this.debug) {
+					console.error("followers debug: variables: generate_trigger:  provided trigger_data: ", trigger_data);
+				}
+
 				const my_trigger_id = trigger_data['trigger_id'];
 
 				const property_trigger_item_el = document.createElement('div');
 				property_trigger_item_el.classList.add('extension-followers-variables-trigger-item');
 				property_trigger_item_el.setAttribute('data-extension-followers-variables-trigger-id', trigger_data['trigger_id']);
+
+				
 
 				const trigger_delete_button_el = document.createElement('div');
 				trigger_delete_button_el.classList.add('data-extension-followers-variables-trigger-delete-button');
@@ -1187,87 +1212,140 @@
 					property_trigger_item_el.remove();
 				})
 
-
 				if (typeof trigger_data['type'] == 'string') {
+					property_trigger_item_el.setAttribute('data-extension-followers-variables-trigger-type', trigger_data['type']);
+				}
+
+				if (typeof trigger_data['property1_type'] == 'string') {
 					property_trigger_item_el.setAttribute('data-extension-followers-variables-trigger-property1-type', trigger_data['property1_type']);
 				}
 
 				
 
-				const property_select_container_el = document.createElement('div');
-				property_select_container_el.classList.add('extension-followers-variables-trigger-item-thing-property-select-container');
-				property_select_container_el.classList.add('extension-followers-item-trigger-part');
+				
+				if(trigger_data['type'] == 'property'){
+					const property_select_container_el = document.createElement('div');
+					property_select_container_el.classList.add('extension-followers-variables-trigger-item-thing-property-select-container');
+					property_select_container_el.classList.add('extension-followers-item-trigger-part');
 
-				const property_thing_select_el = document.createElement('select');
-				property_thing_select_el.classList.add('extension-followers-dropdown');
-				property_thing_select_el.classList.add('extension-followers-thing1');
-				property_select_container_el.appendChild(property_thing_select_el);
+					const property_thing_select_el = document.createElement('select');
+					property_thing_select_el.classList.add('extension-followers-dropdown');
+					property_thing_select_el.classList.add('extension-followers-thing1');
+					property_select_container_el.appendChild(property_thing_select_el);
 
-				const property_property_select_el = document.createElement('select');
-				property_property_select_el.classList.add('extension-followers-dropdown');
-				property_property_select_el.classList.add('extension-followers-property1');
-				property_property_select_el.innerHTML = '<option value="">-</option>';
-				property_select_container_el.appendChild(property_property_select_el);
+					const property_property_select_el = document.createElement('select');
+					property_property_select_el.classList.add('extension-followers-dropdown');
+					property_property_select_el.classList.add('extension-followers-property1');
+					property_property_select_el.innerHTML = '<option value="">-</option>';
+					property_select_container_el.appendChild(property_property_select_el);
 
 
-				if (typeof trigger_data['thing1'] == 'string' && typeof trigger_data['property1'] == 'string') {
-					this.populate_thing_property_selector(property_thing_select_el, trigger_data['thing1'], property_property_select_el, trigger_data['property1']);
-				}
-				else {
-					this.populate_thing_property_selector(property_thing_select_el, null, property_property_select_el, null);
-				}
-				property_trigger_item_el.appendChild(property_select_container_el);
-
-				const changes_sentence_part_el = document.createElement('div');
-				changes_sentence_part_el.classList.add('extension-followers-item-trigger-part');
-
-				const changes_original_el = this.view.querySelector('#extension-followers-variables-original-change-selectors');
-				var changes_clone_el = changes_original_el.cloneNode(true);
-				changes_clone_el.removeAttribute('id');
-				changes_sentence_part_el.appendChild(changes_clone_el);
-				property_trigger_item_el.appendChild(changes_sentence_part_el)
-
-				// populate the enum dropdown
-				if (typeof trigger_data['thing1'] == 'string' && typeof trigger_data['property1'] == 'string') {
-					const property_description = this.get_property_description(trigger_data['thing1'], trigger_data['property1']);
-					if (this.debug) {
-						console.log("followers debug: variables: generate_trigger: got property_description for thing-property?: ", trigger_data['thing1'], typeof trigger_data['property1'], property_description);
+					if (typeof trigger_data['thing1'] == 'string' && typeof trigger_data['property1'] == 'string') {
+						this.populate_thing_property_selector(property_thing_select_el, trigger_data['thing1'], property_property_select_el, trigger_data['property1']);
 					}
-					if (property_description && typeof property_description['type'] == 'string' && typeof property_description['enum'] != 'undefined' && Array.isArray(property_description['enum']) && property_description['enum'].length > 1) {
-						const enum_change_el = property_trigger_item_el.querySelector('.extension-followers-change_enum_value');
-						if (enum_change_el) {
-							for (let ei = 0; ei < property_description['enum'].length; ei++) {
-								enum_change_el.options[enum_change_el.options.length] = new Option(property_description['enum'][ei], property_description['enum'][ei]);
-							}
-							if (typeof trigger_data['change_enum_value'] == 'string' && trigger_data['change_enum_value'] != '' && property_description['enum'].indexOf(trigger_data['change_enum_value']) != -1) {
-								if (this.debug) {
-									console.log("followers debug: variables: generate_trigger: succesfully re-created enum dropdown and set its value to: ", trigger_data['change_enum_value']);
+					else {
+						this.populate_thing_property_selector(property_thing_select_el, null, property_property_select_el, null);
+					}
+					property_trigger_item_el.appendChild(property_select_container_el);
+
+					const changes_sentence_part_el = document.createElement('div');
+					changes_sentence_part_el.classList.add('extension-followers-item-trigger-part');
+
+					const changes_original_el = this.view.querySelector('#extension-followers-variables-original-change-selectors');
+					var changes_clone_el = changes_original_el.cloneNode(true);
+					changes_clone_el.removeAttribute('id');
+					changes_sentence_part_el.appendChild(changes_clone_el);
+					property_trigger_item_el.appendChild(changes_sentence_part_el)
+
+					// populate the enum dropdown
+					if (typeof trigger_data['thing1'] == 'string' && typeof trigger_data['property1'] == 'string') {
+						const property_description = this.get_property_description(trigger_data['thing1'], trigger_data['property1']);
+						if (this.debug) {
+							console.log("followers debug: variables: generate_trigger: got property_description for thing-property?: ", trigger_data['thing1'], typeof trigger_data['property1'], property_description);
+						}
+						if (property_description && typeof property_description['type'] == 'string' && typeof property_description['enum'] != 'undefined' && Array.isArray(property_description['enum']) && property_description['enum'].length > 1) {
+							const enum_change_el = property_trigger_item_el.querySelector('.extension-followers-change_enum_value');
+							if (enum_change_el) {
+								for (let ei = 0; ei < property_description['enum'].length; ei++) {
+									enum_change_el.options[enum_change_el.options.length] = new Option(property_description['enum'][ei], property_description['enum'][ei]);
 								}
-								enum_change_el.value = trigger_data['change_enum_value'];
+								if (typeof trigger_data['change_enum_value'] == 'string' && trigger_data['change_enum_value'] != '' && property_description['enum'].indexOf(trigger_data['change_enum_value']) != -1) {
+									if (this.debug) {
+										console.log("followers debug: variables: generate_trigger: succesfully re-created enum dropdown and set its value to: ", trigger_data['change_enum_value']);
+									}
+									enum_change_el.value = trigger_data['change_enum_value'];
+								}
 							}
 						}
 					}
+
+					if (trigger_data) {
+						if (typeof trigger_data['boolean_change'] == 'string') {
+							property_trigger_item_el.querySelector('.extension-followers-boolean_change').value = trigger_data['boolean_change'];
+						}
+						if (typeof trigger_data['number_change'] == 'string') {
+							property_trigger_item_el.querySelector('.extension-followers-number_change').value = trigger_data['number_change'];
+						}
+						if (typeof trigger_data['string_change'] == 'string') {
+							property_trigger_item_el.querySelector('.extension-followers-string_change').value = trigger_data['string_change'];
+						}
+						if (typeof trigger_data['change_value'] == 'string' || typeof trigger_data['change_value'] == 'number') {
+							property_trigger_item_el.querySelector('.extension-followers-change_value').value = trigger_data['change_value'];
+						}
+						if (typeof trigger_data['change_enum_value'] == 'string') {
+							property_trigger_item_el.querySelector('.extension-followers-change_enum_value').value = trigger_data['change_enum_value'];
+						}
+					}
 				}
+				else if(trigger_data['type'] == 'time'){
+					if (this.debug) {
+						console.log("regenerating time-type trigger");
+					}
+					const time_select_container_el = document.createElement('div');
+					time_select_container_el.classList.add('extension-followers-variables-trigger-item-time-select-container');
+					time_select_container_el.classList.add('extension-followers-item-trigger-part');
 
-				if (trigger_data) {
-					if (typeof trigger_data['boolean_change'] == 'string') {
-						property_trigger_item_el.querySelector('.extension-followers-boolean_change').value = trigger_data['boolean_change'];
+					// Time delta input
+					const time_delta_input_el = document.createElement('input');
+					time_delta_input_el.setAttribute('type','number');
+					time_delta_input_el.classList.add('extension-followers-time_delta');
+					if(trigger_data['time_delta']){
+						time_delta_input_el.value = trigger_data['time_delta'];
 					}
-					if (typeof trigger_data['number_change'] == 'string') {
-						property_trigger_item_el.querySelector('.extension-followers-number_change').value = trigger_data['number_change'];
+					/*
+					if (typeof trigger_data['time_delta'] == 'number') {
+						time_delta_input_el.value = trigger_data['time_delta'];
 					}
-					if (typeof trigger_data['string_change'] == 'string') {
-						property_trigger_item_el.querySelector('.extension-followers-string_change').value = trigger_data['string_change'];
+					*/
+					else{
+						time_delta_input_el.value = 10;
 					}
-					if (typeof trigger_data['change_value'] == 'string' || typeof trigger_data['change_value'] == 'number') {
-						property_trigger_item_el.querySelector('.extension-followers-change_value').value = trigger_data['change_value'];
-					}
-					if (typeof trigger_data['change_enum_value'] == 'string') {
-						property_trigger_item_el.querySelector('.extension-followers-change_enum_value').value = trigger_data['change_enum_value'];
-					}
+					time_select_container_el.appendChild(time_delta_input_el);
 
+					// Time delta multiplier
+					const time_delta_select_el = document.createElement('select');
+					const time_delta_multipliers = {'1':'second(s)','60':'minute(s)','3600':'hour(s)','86400':'day(s)','31536000':'year(s)'};
+					for (const [multiplier_value,multiplier_name] of Object.entries(time_delta_multipliers)) {
+						const time_delta_option = new Option(multiplier_name,multiplier_value);
+						//if (typeof trigger_data['time_delta_multiplier'] == 'number' && parseInt(multiplier_value) == trigger_data['time_delta_multiplier']) {
+						if (typeof trigger_data['time_delta_multiplier'] == 'string' && multiplier_value == trigger_data['time_delta_multiplier']) {
+							if (this.debug) {
+								console.log("followers debug: variables: found the selected time multiplier");
+							}
+							time_delta_option.selected = true;
+						}
+						time_delta_select_el.options[time_delta_select_el.options.length] = time_delta_option;
+					}
+					time_delta_select_el.classList.add('extension-followers-dropdown');
+					time_delta_select_el.classList.add('extension-followers-time_delta_multiplier');
+					time_select_container_el.appendChild(time_delta_select_el);
 
+					const passed_el = document.createElement('span');
+					passed_el.classList.add('extension-followers-sentence-passed');
+					passed_el.textContent = ' have passed ';
+					time_select_container_el.appendChild(passed_el);
 
+					property_trigger_item_el.appendChild(time_select_container_el);
 				}
 
 
@@ -1459,12 +1537,15 @@
 					clone.querySelector('.extension-followers-switch-slider').htmlFor = 'extension-variables-toggle' + this.variables_number;
 
 					enabled_checkbox_el.addEventListener('change', () => {
-						console.log("user toggled enabled of Variable");
+						console.log("user toggled enabled state of Variable");
 						// using a small timeout because later code can undo enabling the variable
 						setTimeout(() => {
 							if (typeof items[unique_id]['enabled'] == 'boolean') {
 								if (items[unique_id]['enabled'] == true) {
 									clone.classList.add('data-extension-followers-variables-item-is-enabled');
+									
+									this.regenerate_thing_properties();
+									
 								}
 								else {
 									clone.classList.remove('data-extension-followers-variables-item-is-enabled');
@@ -1512,7 +1593,14 @@
 									//new_trigger_el.setAttribute('data-extension-followers-variables-trigger-property1-type', trigger_type);
 									trigger_elements_list_el.appendChild(new_trigger_el);
 								}
-
+							}
+							else if (trigger_type == 'time') {
+								//this.variables[unique_id]['triggers'][trigger_id]['type'] = trigger_type;
+								const new_trigger_el = generate_trigger(unique_id, this.variables[unique_id]['triggers'][trigger_id]);
+								if (new_trigger_el) {
+									//new_trigger_el.setAttribute('data-extension-followers-variables-trigger-property1-type', trigger_type);
+									trigger_elements_list_el.appendChild(new_trigger_el);
+								}
 							}
 						}
 					})
@@ -1865,6 +1953,27 @@
 		}
 		return null
 	}
+	
+	
+	regenerate_thing_properties(){
+		if (this.debug) {
+			console.log("followers debug: variables: in regenerate_thing_properties");
+		}
+		
+  		// Get list of items
+		window.API.postJson(
+		  `/extensions/${this.id}/api/regenerate_thing`
+		).then((body) => {
+			if (this.debug) {
+				console.log("followers debug: variables: regenerate_thing_properties: response: ", body);
+			}
+		})
+		.catch((err) => {
+			console.error("followers debug: variables:  caught error calling")
+		})
+	}
+	
+	
 
 
 	start_variables_screensaver(){
@@ -1920,7 +2029,7 @@
 				if (typeof pixel_value != 'number') {
 					return
 				}
-
+				
 				pixel_value = Math.abs(Math.round(pixel_value));
 				if(this.debug){
 					console.log("\nfollowers debug: update_variables_screensaver: pixel_value before: ", pixel_value);
@@ -1933,25 +2042,28 @@
 						scaling_factor = 100 / allowed_range;
 					}
 					pixel_value = pixel_value * scaling_factor;
-					pixel_value += 10;
+					//pixel_value += 10;
 				}
 				else{
 					pixel_value = pixel_value % 100;
 				}
 
-				pixel_value += 10;
-
+				pixel_value += 20;
+				/*
 				if (pixel_value == 10){
 					pixel_value = 60;
 				}
+				*/
 
 				if (this.debug) {
 					console.log("followers debug: update_variables_screensaver: pixel_value after: ", pixel_value);
 				}
 
-
 				variable_item_el.style.setProperty('--s', pixel_value + 'px');
-				variable_item_el.querySelector('.extension-followers-variables-value-container').style.setProperty('--s', pixel_value + 'px');
+				const variables_item_value_container_bg_el = variable_item_el.querySelector('.extension-followers-variables-value-container-bg');
+				if(variables_item_value_container_bg_el){
+					variables_item_value_container_bg_el.style.setProperty('--s', pixel_value + 'px');
+				}
 			}
 		}
 	}

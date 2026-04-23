@@ -32,6 +32,8 @@
     background-image: url("../images/menu-icon.svg");
     width: 8rem;
     margin: 2rem auto;
+	cursor:pointer;
+	user-select: none;
 }
 #extension-followers-variables-title{
 	background-image: url("../images/variables-menu-icon.svg");
@@ -217,12 +219,14 @@ body:not(.developer) .extension-followers-show-if-developer{
 #extension-followers-content .extension-followers-item-sentence > *:first-of-type {
     padding-top: 2rem;
 }
+
 .extension-followers-item-sentence > *:last-of-type {
     padding-bottom: 2rem;
-    padding-top: 2rem;
+    /*padding-top: 2rem;
     margin-top: 1rem;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.1);*/
 }
+
 
 .extension-followers-item-right {
     text-align: center;
@@ -330,7 +334,7 @@ body:not(.developer) .extension-followers-show-if-developer{
     font-size: 1.6rem;
     color: #fff;
     height: auto;
-    max-width: 80rem;
+    max-width: 120rem;
     margin: 0 auto;
 }
 
@@ -407,6 +411,9 @@ body:not(.developer) .extension-followers-show-if-developer{
        margin-bottom: 2rem;
     }
     
+	#extension-followers-view #extension-followers-list select {
+		max-width:35rem;
+	}
 }
 
 @media screen and (min-width: 1025px) {

@@ -40,7 +40,7 @@ body.kiosk #extension-followers-variables-content-container{
 .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="float"] .extension-followers-variables-item-hide-if-number,
 .extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-property1-type="number"] .extension-followers-variables-item-hide-if-number,
 #extension-followers-view.extensions-followers-view-show-variables #extension-followers-content,
-body:not(.screensaver) #extension-followers-view:not(.extensions-followers-view-show-variables) #extension-followers-variables-content-container,
+body:not(.screensaver) #extension-followers-view:not(.extensions-followers-view-show-variables) #extension-followers-variables-content,
 body#path-extensions-followers.screensaver #extension-followers-view > #extension-followers-content,
 body#path-extensions-followers.screensaver #extension-followers-variables-content .extension-followers-variables-item-unique_id{
 	display:none!important;
@@ -224,6 +224,10 @@ body#path-extensions-followers.screensaver #extension-followers-variables-conten
 	content: '💯';
 }
 
+.extension-followers-variables-trigger-item[data-extension-followers-variables-trigger-type="time"]::before {
+	content: '⌛';
+}
+
 
 .extension-followers-variables-value-container{
 	margin-bottom:1rem;
@@ -282,7 +286,9 @@ body#path-extensions-followers.screensaver .extension-followers-name{
 	text-align: right;
 }
 
-
+#extension-followers-view .extension-followers-variables-item-trigger-buttons-container > button{
+	padding:1rem;
+}
 
 
 

@@ -223,11 +223,17 @@ class FollowersProperty(Property):
             print("property: update: unexpectedly received meta data.  self.title, meta: ", self.title, meta)
         
         if self.DEBUG:
+            print("property -> update.  existing value: ", self.value)
             print("property -> update.  typeof value, value: ", type(value), value)
+           
+        self.device.adapter.api_handler.persistent_data['variables'][self.id]['value'] = value
+        
         if value != self.value:
-            self.device.adapter.api_handler.persistent_data['variables'][self.id]['value'] = self.value
             self.device.adapter.api_handler.should_save = True
             self.value = value
             self.set_cached_value(value)
             self.device.notify_property_changed(self)
-        return value
+        return self.value
+        
+        
+        
