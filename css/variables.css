@@ -279,6 +279,7 @@ body#path-extensions-followers.screensaver #extension-followers-variables-conten
 	top: 0;
     left: 0;
 	opacity:.5;
+	transition: background-size 1s ease-in-out;
 }
 
 #extension-followers-view .extension-followers-name{
@@ -465,7 +466,7 @@ body#path-extensions-followers.screensaver.developer input[type="number"].extens
 /*  thanks to: https://css-pattern.com/  */
 
 body#path-extensions-followers.screensaver  #extension-followers-variables-list > .extension-followers-item:nth-child(1),
-body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(1) .extension-followers-variables-value-container-bg {
+body#path-extensions-followers:not(.screensaver)  #extension-followers-variables-list > .extension-followers-item:nth-child(1) .extension-followers-variables-value-  {
 	--s: 70px;
 	--c1: #655643;
 	--c2: #80bca3;
