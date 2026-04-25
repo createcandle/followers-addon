@@ -400,6 +400,10 @@
 						if(Object.keys(this.variables).length == 0){
 							this.view.querySelector('#extension-followers-variables-tutorial').classList.remove('extension-followers-hidden');
 						}
+						else{
+							this.ensure_thing_subscription();
+						}
+						
 					}
 
 					if (typeof body.greyscale == 'boolean') {
@@ -610,7 +614,7 @@
 			}
 
 
-			this.ensure_thing_subscription();
+			
 		
 		}, 100);
 
@@ -2161,7 +2165,6 @@
 					else{
 						console.error("followers: could not find #extension-followers-variables-add-thing-hint");
 					}
-					
 				}
 			});
 			

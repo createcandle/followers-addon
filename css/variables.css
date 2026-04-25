@@ -38,6 +38,13 @@ body.kiosk #extension-followers-variables-content-container{
 	cursor:pointer;
 }
 
+
+
+#extension-followers-variables-add-thing-button{
+	display:block;
+	margin-left:auto;
+}
+
 /*
 #extension-followers-thing-to-variables-shortcut-container > button{
 	background-image: url('/extensions/followers/images/variables-menu-icon.svg');
