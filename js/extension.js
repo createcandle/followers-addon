@@ -143,12 +143,15 @@
 			
             let shortcut_button = document.createElement('button');
             shortcut_button.setAttribute("id", "extension-followers-thing-to-variables-shortcut-button");
-            shortcut_button.classList.add('text-button');
-			shortcut_button.textContent = 'Manage Variables';
+            //shortcut_button.classList.add('text-button');
+			//shortcut_button.textContent = 'Manage Variables';
 			shortcut_button.addEventListener('click', () => {
 				const variables_main_menu_item_el = document.getElementById('extension-variables-menu-item');
 				if(variables_main_menu_item_el){
 					setTimeout(() => {
+						document.getElementById('menu-button').classList.remove('hidden');
+						document.getElementById('back-button').classList.add('hidden');
+						document.getElementById('overflow-button').classList.add('hidden');
 						variables_main_menu_item_el.click();
 					},10);
 					

@@ -34,6 +34,10 @@ body.kiosk #extension-followers-variables-content-container{
 	margin-top:4rem;
 }
 
+#extension-followers-thing-to-variables-shortcut-button{
+	cursor:pointer;
+}
+
 /*
 #extension-followers-thing-to-variables-shortcut-container > button{
 	background-image: url('/extensions/followers/images/variables-menu-icon.svg');
