@@ -52,6 +52,7 @@
 		this.variables_menu_item_el = null;
 
 		this.thing_property_lookup = {};
+		this.subscribed_to_thing = false;
 
 		//console.log("followers: window.location.hash: ", window.location.hash);
 
@@ -61,7 +62,7 @@
 		}
 
 
-		this.followers_menu_item_el = document.getElementById('extension-dashboard-menu-item');
+		this.followers_menu_item_el = document.getElementById('extension-followers-menu-item');
 		if(this.followers_menu_item_el){
 			this.followers_menu_item_el.addEventListener('click', () => {
 				
@@ -71,14 +72,9 @@
 				//}
 				
 				this.view.classList.remove('extensions-followers-view-show-variables');
-				if(this.at_variables){
-					this.at_variables = false;
-					this.regenerate_items();
-				}
-				
-				this.regenerate_variables(); // generate it once, just to ensure that the screensaver will work
-				
-				
+				this.at_variables = false;
+				this.regenerate_items();
+				this.regenerate_variables(); // also generate it, to ensure that the screensaver will work
 			});
 		}
 		/*
@@ -133,49 +129,37 @@
 		.catch((e) => console.error('Failed to fetch content:', e));
 
 
-		if (typeof this.subscribeToThingProperties == 'function'){
-			console.warn("\n\n\nthis.subscribeToThingProperties is available");
-			API.getThings().then((things) => {
-				//console.log('API: things: ', things);
-				for(const index in things){
-					//console.log("things[index]['href']: ", things[index]['href']);
-					if(things[index]['href'] == '/things/candle-variables'){
-						console.log("/things/candle-variables exists. Subscribing.")
-						// Candle-variables thing exists, so let's subscribe to updates about its properties
-						this.subscribeToThingProperties('candle-variables', (message) => {
-							//if(this.debug){
-							console.warn("followers debug: variables: subscribeToThingProperties: received message: ", message);
-							//}
-							for (let [unique_id, details] of Object.entries(this.variables)) {
-								console.log("looking over variables items:  unique_id, detail: ", unique_id, details);
-								if(typeof message[unique_id] != 'undefined'){
-									//if(this.debug){
-									console.warn("followers debug: found the variable that was updated.  unique_id and new value: ", unique_id, message[unique_id]);
-									//}
-									this.variables[unique_id]['value'] = message[unique_id];
-									this.update_variables_screensaver_item(unique_id);
-									const variable_item_value_el = this.view.querySelector('#extension-followers-variables-list > .extension-followers-item[data-extension-followers-variables-item-unique-id="' + unique_id + '"] .extension-followers-value');
-									if(variable_item_value_el){
-										console.log("OK, found variable_item_value_el")
-										variable_item_value_el.value = message[unique_id];
-									}
-									else{
-										console.warn("cound not find variable_item_value_el");
-									}
-								}
-							}
-							
-						});
-						break
-					}
-						
+
+		//this.ensure_thing_subscription();
+		
+		
+		// Add shortcut to Variables thing
+		
+        if(document.getElementById('extension-followers-thing-to-variables-shortcut-container') == null){
+            
+			let shortcut_container = document.createElement('div');
+            shortcut_container.setAttribute("id", "extension-followers-thing-to-variables-shortcut-container");
+			shortcut_container.classList.add('extension-followers-flex-center');
+			
+            let shortcut_button = document.createElement('button');
+            shortcut_button.setAttribute("id", "extension-followers-thing-to-variables-shortcut-button");
+            shortcut_button.classList.add('text-button');
+			shortcut_button.textContent = 'Manage Variables';
+			shortcut_button.addEventListener('click', () => {
+				const variables_main_menu_item_el = document.getElementById('extension-variables-menu-item');
+				if(variables_main_menu_item_el){
+					setTimeout(() => {
+						variables_main_menu_item_el.click();
+					},10);
+					
 				}
 			});
-			
+            shortcut_container.appendChild(shortcut_button);
+            document.getElementById("things-view").appendChild(shortcut_container);
+	
 		}
-		else{
-			console.warn("this.subscribeToThingProperties is not available");
-		}
+		
+		
 	}
 
 	/*
@@ -230,7 +214,25 @@
 				//console.log("leader dropdown existed");
 			}
 
+			// Shortcut to Add New Thing page
+			const add_thing_hint_button_el = this.view.querySelector('#extension-followers-variables-add-thing-button');
+			if(add_thing_hint_button_el){
+				add_thing_hint_button_el.addEventListener('click', () => {
+					setTimeout(() => {
+						document.getElementById('add-button').click();
+					},10);
+				});
+			}
 
+
+			// Shortcut to Variables thing
+			const variables_to_thing_shortcut_button_el = this.view.querySelector('#extension-followers-variables-to-thing-shortcut-button');
+			if(variables_to_thing_shortcut_button_el){
+				variables_to_thing_shortcut_button_el.addEventListener('click', () => {
+					window.location.href = '/things/candle-variables';
+				});
+			}
+			
 
 		  	// Click event for followers ADD button
 			const followers_add_button_el = this.view.querySelector('#extension-followers-add-button');
@@ -242,13 +244,15 @@
 			  	});
 			}
 
-
+			// Screensaver overlay (TODO: unused?)
+			/*
 			const variables_play_overlay_el = this.view.querySelector('#extension-followers-variables-play-overlay');
 			if (variables_play_overlay_el) {
 				variables_play_overlay_el.addEventListener('click', () => {
 					this.stop_variables_screensaver();
 				});
 			}
+			*/
 
 
 			const variables_play_button_el = this.view.querySelector('#extension-followers-variables-play-button-container');
@@ -601,6 +605,9 @@
 				});
 
 			}
+
+
+			this.ensure_thing_subscription();
 		
 		}, 100);
 
@@ -1709,7 +1716,7 @@
 
 
 	populate_thing_property_selector( thing_dropdown_el, selected_thing_id=null, property_dropdown_el=null, selected_property_id=null){
-		console.log("in populate_thing_property_selector.  selected_thing_id,selected_property_id: ", selected_thing_id, selected_property_id);
+		//console.log("in populate_thing_property_selector.  selected_thing_id,selected_property_id: ", selected_thing_id, selected_property_id);
 
 		if (!thing_dropdown_el) {
 			console.error("populate_thing_property_selector: no select el provided");
@@ -2093,6 +2100,75 @@
 		document.body.classList.remove('screensaver');
 		//this.showing_screensaver = false;
 	}
+
+
+	ensure_thing_subscription(){
+		if (this.debug) {
+			console.log("followers debug: in ensure_thing_subscription.  this.subscribed_to_thing: ", this.subscribed_to_thing);
+		}
+		if (typeof this.subscribeToThingProperties == 'function' && this.subscribed_to_thing == false){
+			//console.warn("\n\n\nthis.subscribeToThingProperties is available");
+			
+
+			
+			API.getThings().then((things) => {
+				//console.log('API: things: ', things);
+				let found_the_thing = false;
+				for(const index in things){
+					//console.log("things[index]['href']: ", things[index]['href']);
+					if(things[index]['href'] == '/things/candle-variables'){
+
+						this.view.classList.add('extension-followers-variables-thing-available');
+						//console.log("/things/candle-variables exists. Subscribing.")
+						// Candle-variables thing exists, so let's subscribe to updates about its properties
+						this.subscribeToThingProperties('candle-variables', (message) => {
+							//if(this.debug){
+							//console.warn("followers debug: variables: subscribeToThingProperties: received message: ", message);
+							//}
+							for (let [unique_id, details] of Object.entries(this.variables)) {
+								//console.log("looking over variables items:  unique_id, detail: ", unique_id, details);
+								if(typeof message[unique_id] != 'undefined'){
+									//if(this.debug){
+									//console.warn("followers debug: found the variable that was updated.  unique_id and new value: ", unique_id, message[unique_id]);
+									//}
+									this.variables[unique_id]['value'] = message[unique_id];
+									this.update_variables_screensaver_item(unique_id);
+									const variable_item_value_el = this.view.querySelector('#extension-followers-variables-list > .extension-followers-item[data-extension-followers-variables-item-unique-id="' + unique_id + '"] .extension-followers-value');
+									if(variable_item_value_el){
+										//console.log("OK, found variable_item_value_el")
+										variable_item_value_el.value = message[unique_id];
+									}
+									else{
+										//console.warn("cound not find variable_item_value_el");
+									}
+								}
+							}
+							
+						});
+						this.subscribed_to_thing = true;
+						break
+					}
+						
+				}
+				if(found_the_thing == false){
+					const add_thing_hint_el = this.view.querySelector('#extension-followers-variables-add-thing-hint');
+					if(add_thing_hint_el){
+						add_thing_hint_el.classList.remove('extension-followers-hidden');
+					}
+					else{
+						console.error("followers: could not find #extension-followers-variables-add-thing-hint");
+					}
+					
+				}
+			});
+			
+		}
+		else{
+			//console.warn("this.subscribeToThingProperties is not available");
+		}
+	}
+
+
 
 
   }

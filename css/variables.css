@@ -17,6 +17,67 @@ body.kiosk #extension-followers-variables-content-container{
 }
 
 
+
+/*  Thing to Variables shortcut  */
+
+#extension-followers-variables-add-thing-hint,
+#extension-followers-variables-to-thing-shortcut-container,
+#extension-followers-thing-to-variables-shortcut-container{
+	width:100%;
+	min-height:10vh;
+	display:flex;
+	align-items:center;
+	justify-content: center;
+}
+
+#extension-followers-variables-to-thing-shortcut-container{
+	margin-top:4rem;
+}
+
+/*
+#extension-followers-thing-to-variables-shortcut-container > button{
+	background-image: url('/extensions/followers/images/variables-menu-icon.svg');
+	display: block;
+    padding: 2rem;
+    padding-left: 6.8rem;
+    font-size: 1.8rem;
+    color: #fff;
+    text-decoration: none;
+    background-size: 3.2rem;
+    background-repeat: no-repeat;
+    background-position: 2rem;
+    outline: 0;
+	opacity:.8;
+	border-radius:1rem;
+}
+#extension-followers-thing-to-variables-shortcut-container > button:hover{
+	opacity:1;
+}
+*/
+#extension-followers-thing-to-variables-shortcut-container > button{
+	background-image: url(/extensions/followers/images/variables-menu-icon.svg);
+	display: block;
+	font-size: 1.8rem;
+	color: #fff;
+	text-decoration: none;
+	background-size: 3.2rem;
+	background-repeat: no-repeat;
+	outline: 0;
+	display: block;
+	position: relative;
+	width: 5.6rem;
+	height: 5.6rem;
+	border-radius: 2.8rem;
+	background-color: #7dafd2;
+	background-size: 3.8rem;
+	background-position: center;
+	position:fixed;
+	bottom:2rem;
+	left:2rem;
+}
+
+
+
 /*  tutorial  */
 
 #extension-followers-variables-tutorial{
@@ -50,7 +111,9 @@ body.kiosk #extension-followers-variables-content-container{
     height: 1.5rem;
 }
 
-
+#extension-followers-view:not(.extension-followers-variables-thing-available) #extension-followers-variables-to-thing-shortcut-container,
+#extension-followers-view.extension-followers-variables-thing-available #extension-followers-variables-add-thing-hint,
+body:not(#path-things-candle-variables) #extension-followers-thing-to-variables-shortcut-container,
 #extension-followers-variables-list:empty ~ #extension-followers-variables-play-button,
 #extension-followers-variables-list:not(:empty) ~ #extension-followers-variables-tutorial,
 #extension-followers-variables-original-change-selectors,

@@ -133,6 +133,12 @@
 
 		<div id="extension-followers-variables-list"></div>
 
+        <div id="extension-followers-variables-add-thing-hint" class="extension-followers-hidden">
+            <p>Variables created a Thing which you'll need to accept into Candle.</p>
+            <button id="extension-followers-variables-add-thing-button">Accept Variables Thing</button>
+        </div>
+        <div id="extension-followers-variables-to-thing-shortcut-container"><button id="extension-followers-variables-to-thing-shortcut-button" class="text-button">View Variables Thing</button></div>
+
         <div id="extension-followers-variables-tutorial" class="extension-followers-hidden">
             <div class="extension-followers-flex-wrap-when-narrow">
                 <div>
@@ -169,9 +175,9 @@
 						<option value="range">↔ range between</option>
 						<option value="loop">↻ wrap around between</option>
 						<option value="bounce">⇄ bounce between</option>
+                        <option value="start_at">∞ start at</option>
 	  					<option value="stay_above">↦ stay above</option>
                         <option value="stay_below">↤ stay below</option>
-                        <option value="start_at">∞ start at</option>
 	                </select>
 				
                     <span>
@@ -264,8 +270,9 @@
 
 	</div>
 
+    <!--
     <div id="extension-followers-variables-play-overlay"></div>
-
+    -->
     
 
     <button id="extension-followers-variables-add-button" class="icon-button" aria-label="New"></button>

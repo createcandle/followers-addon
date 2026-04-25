@@ -46,7 +46,7 @@
 
 #extension-followers-view button {
     font-size: 1.6rem;
-    padding: 0.5rem 1rem;
+    padding: 1rem;
     border: none;
     cursor:pointer;
 }

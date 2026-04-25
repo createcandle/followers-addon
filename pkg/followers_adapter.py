@@ -125,17 +125,30 @@ class FollowersDevice(Device):
                         'type': 'number',
                     }
                 
-                if added_level_property == False:
-                    added_level_property = True
-                    description['@type'] = 'LevelProperty'
-
-                if self.adapter.api_handler.persistent_data['variables'][unique_id]['type'] != 'increase':
+                if (self.adapter.api_handler.persistent_data['variables'][unique_id]['type'] == 'range' or \
+                  self.adapter.api_handler.persistent_data['variables'][unique_id]['type'] == 'loop' or \
+                  self.adapter.api_handler.persistent_data['variables'][unique_id]['type'] == 'bounce') and \
+                  'limit1' in self.adapter.api_handler.persistent_data['variables'][unique_id] and len(str(self.adapter.api_handler.persistent_data['variables'][unique_id]['limit1'])) and \
+                  'limit2' in self.adapter.api_handler.persistent_data['variables'][unique_id] and len(str(self.adapter.api_handler.persistent_data['variables'][unique_id]['limit2'])):
+                  
                     description['minimum'] = float(self.adapter.api_handler.persistent_data['variables'][unique_id]['limit1'])
                     description['maximum'] = float(self.adapter.api_handler.persistent_data['variables'][unique_id]['limit2'])
                 
+                    if added_level_property == False:
+                        added_level_property = True
+                        description['@type'] = 'LevelProperty'
+                    
 
                 if not 'value' in self.adapter.api_handler.persistent_data['variables'][unique_id]:
-                    self.adapter.api_handler.persistent_data['variables'][unique_id]['value'] = float(self.adapter.api_handler.persistent_data['variables'][unique_id]['limit1'])
+                    if 'limit1' in self.adapter.api_handler.persistent_data['variables'][unique_id] and len(str(self.adapter.api_handler.persistent_data['variables'][unique_id]['limit1'])):
+                        self.adapter.api_handler.persistent_data['variables'][unique_id]['value'] = float(self.adapter.api_handler.persistent_data['variables'][unique_id]['limit1'])
+                    elif 'limit2' in self.adapter.api_handler.persistent_data['variables'][unique_id] and len(str(self.adapter.api_handler.persistent_data['variables'][unique_id]['limit2'])):
+                        self.adapter.api_handler.persistent_data['variables'][unique_id]['value'] = float(self.adapter.api_handler.persistent_data['variables'][unique_id]['limit2'])
+                    else:
+                        if self.DEBUG:
+                            print("device: WARNING, no value. Setting it to zero..")
+                        self.adapter.api_handler.persistent_data['variables'][unique_id]['value'] = 0
+                
                 self.properties[unique_id] = FollowersProperty(
                                     self,
                                     unique_id,
