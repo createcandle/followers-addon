@@ -20,9 +20,7 @@ body.kiosk #extension-followers-variables-content-container{
 
 /*  Thing to Variables shortcut  */
 
-#extension-followers-variables-add-thing-hint,
-#extension-followers-variables-to-thing-shortcut-container,
-#extension-followers-thing-to-variables-shortcut-container{
+#extension-followers-variables-add-thing-hint{
 	width:100%;
 	min-height:10vh;
 	display:flex;
@@ -65,13 +63,15 @@ body.kiosk #extension-followers-variables-content-container{
 	opacity:1;
 }
 */
+
+#extension-followers-variables-to-thing-shortcut-button,
 #extension-followers-thing-to-variables-shortcut-container > button{
-	background-image: url(/extensions/followers/images/variables-menu-icon.svg);
 	display: block;
+	/*
 	font-size: 1.8rem;
 	color: #fff;
 	text-decoration: none;
-	background-size: 3.2rem;
+	*/
 	background-repeat: no-repeat;
 	outline: 0;
 	display: block;
@@ -80,13 +80,21 @@ body.kiosk #extension-followers-variables-content-container{
 	height: 5.6rem;
 	border-radius: 2.8rem;
 	background-color: #7dafd2;
-	background-size: 3.8rem;
 	background-position: center;
 	position:fixed;
 	bottom:2rem;
 	left:2rem;
 }
 
+#extension-followers-thing-to-variables-shortcut-container > button{
+	background-size: 3.6rem;
+	background-image: url('/extensions/followers/images/variables-menu-icon.svg');
+}
+
+#extension-followers-variables-to-thing-shortcut-button{
+	background-image: url('../images/thing-details-link.svg');
+	background-size: 3rem;
+}
 
 
 /*  tutorial  */
