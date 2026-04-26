@@ -81,6 +81,12 @@ body:not(.developer) .extension-followers-show-if-developer{
 .extension-followers-flex-wrap-when-narrow{
 	display:flex;
 }
+
+.extension-followers-flex-between{
+    display:flex;
+    justify-content: space-between;
+}
+
 /*
 .extension-followers-flex-column{
     display:flex;
@@ -240,7 +246,7 @@ body:not(.developer) .extension-followers-show-if-developer{
     padding-bottom: 2rem;
     /*padding-top: 2rem;
     margin-top: 1rem;
-    background-color: rgba(0, 0, 0, 0.1);*/
+    background-color: rgba(0, 0, 0, 0.1);*/ 
 }
 
 

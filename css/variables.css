@@ -173,6 +173,13 @@ extension-followers-view .extension-followers-variables-trigger-item[data-extens
 
 */
 
+#extension-followers-variables-new-name-input{
+	margin-bottom:2rem;
+	width:80%;
+	border: 1px solid rgba(0, 0, 0, .5);
+}
+
+
 
 .extension-followers-variables-item-triggers-list:not(:empty)::before{
 	content:'Whenever';

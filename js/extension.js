@@ -5,28 +5,7 @@
 		//console.log("Adding followers addon to menu");
 		this.addMenuEntry('Followers');
 		this.addMenuEntry('Variables');
-		/*
-		console.log("App: ", typeof App);
-		console.log("this.APP: ", typeof this.APPf);
-		console.log("window: ", window);
-		console.log("this: ", this);
-		console.log("this.App: ", this.App);
-		console.log("this.app: ", this.app);
-
-		API.getThings().then((things) => {
-			console.log('API: things: ', things);
-		});
-
-		API.getThing('internet-radio').then((thing) => {
-			console.log('API: thing: ', thing);
-			console.log("typeof thing.subscribe: ", typeof thing.subscribe);
-			console.log("typeof this.subscribe: ", typeof this.subscribe);
-			console.log("typeof thing.thingModel ", typeof thing.thingModel);
-			console.log("typeof this.thingModel ", typeof this.thingModel);
-			console.log("typeof thing.APP: ", typeof thing.APP);
-			console.log("typeof this.APP: ", typeof this.APP);
-		});
-		*/
+		
 
 		this.content = '';
 		this.debug = false;
@@ -271,6 +250,34 @@
 					this.add_variable();
 			  	});
 			}
+
+			const close_name_dialog_button_el = this.view.querySelector('#extension-followers-variables-name-dialog-close-button');
+			if(close_name_dialog_button_el){
+		  		close_name_dialog_button_el.addEventListener('click', () => {
+					this.view.querySelector('#extension-followers-variables-name-dialog').close();
+			  	});
+			}
+
+			const save_name_dialog_button_el = this.view.querySelector('#extension-followers-variables-name-dialog-save-button');
+			if(save_name_dialog_button_el){
+				save_name_dialog_button_el.addEventListener('click', () => {
+			  		const new_name_input_el = this.view.querySelector('#extension-followers-variables-new-name-input');
+					if(new_name_input_el){
+						let provided_name = new_name_input_el.value;
+						if(this.debug){
+							console.log("followers debug: new_name_input_el.value: -->" + provided_name + "<--. length: ", provided_name.trim().length );
+						}
+						if(provided_name.trim().length > 2){
+							this.save_new_variable(provided_name);
+						}
+					}
+				});
+			}
+
+
+			
+
+			
 
 			this.view.querySelector('#extension-followers-title').addEventListener('click', () => {
 				this.show_variables();
@@ -613,9 +620,6 @@
 
 			}
 
-
-			
-		
 		}, 100);
 
 	}
@@ -1136,20 +1140,36 @@
 	// Add a new Variable
 
 	add_variable(){
-		let variable_name = prompt("Please give the new variable a name");
-		let unique_id = variable_name.replaceAll(' ', '-').replace(/[^a-zA-Z0-9]/g, '');
-		if (unique_id.length > 2) {
-			if (typeof this.variables[unique_id] != 'undefined' && this.variables[unique_id]['name'] == variable_name) {
-				alert('That variable already exists');
-				return
-			}
-			while (typeof this.variables[unique_id] != 'undefined') {
-				unique_id += this.random_letter();
-			}
-			this.variables[unique_id] = { 'enabled': false, 'unique_id': unique_id, 'going_up': true, 'name': variable_name, 'triggers': {} ,'value':0}
-			this.regenerate_variables();
-			this.view.scrollTop = this.view.scrollHeight;
+		const new_variable_dialog_el = this.view.querySelector('#extension-followers-variables-name-dialog');
+		if(new_variable_dialog_el){
+			new_variable_dialog_el.showModal();
 		}
+	}
+	
+	save_new_variable(variable_name=""){
+		console.log("in save_new_variable. variable_name: ", variable_name);
+		//let variable_name = prompt("Please give the new variable a name");
+		if(typeof variable_name == 'string'){
+			let unique_id = variable_name.replaceAll(' ', '-').replace(/[^a-zA-Z0-9]/g, '');
+			if (unique_id.length > 2) {
+				if (typeof this.variables[unique_id] != 'undefined' && this.variables[unique_id]['name'] == variable_name) {
+					alert('A variable with that name already exists');
+					return
+				}
+				while (typeof this.variables[unique_id] != 'undefined') {
+					unique_id += this.random_letter();
+				}
+				this.variables[unique_id] = { 'enabled': false, 'unique_id': unique_id, 'going_up': true, 'name': variable_name, 'triggers': {} ,'value':0}
+				this.regenerate_variables();
+				
+				this.view.querySelector('#extension-followers-variables-name-dialog').close();
+
+				this.view.scrollTop = this.view.scrollHeight;
+
+				
+			}
+		}
+		
 	}
 
 
@@ -2155,7 +2175,7 @@
 						this.subscribed_to_thing = true;
 						break
 					}
-						
+					
 				}
 				if(found_the_thing == false){
 					const add_thing_hint_el = this.view.querySelector('#extension-followers-variables-add-thing-hint');
